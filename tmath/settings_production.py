@@ -19,9 +19,17 @@ SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 # Parse ALLOWED_HOSTS from environment
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get('ALLOWED_HOSTS', '*').split(',') if h.strip()]
 
-# CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if host != '*']
-CSRF_TRUSTED_ORIGINS.extend([f'http://{host}' for host in ALLOWED_HOSTS if host != '*'])
+# CSRF trusted origins - read from env or build from ALLOWED_HOSTS
+csrf_env = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+if csrf_env:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in csrf_env.split(',') if o.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if host != '*']
+    CSRF_TRUSTED_ORIGINS.extend([f'http://{host}' for host in ALLOWED_HOSTS if host != '*'])
+
+# CSRF cookie settings for HTTP
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = False
 
 # =============================================================================
 # DATABASE
@@ -103,8 +111,11 @@ COMPRESS_OFFLINE = False
 
 # Enable when using HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
+
+# Check if we have SSL configured (set USE_SSL=true in .env after SSL is ready)
+USE_SSL = os.environ.get('USE_SSL', 'False').lower() in ('true', '1', 'yes')
+SESSION_COOKIE_SECURE = USE_SSL
+CSRF_COOKIE_SECURE = USE_SSL
 
 # HSTS (enable after SSL is configured)
 if not DEBUG:
