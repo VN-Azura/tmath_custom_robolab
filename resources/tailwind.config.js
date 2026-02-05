@@ -32,7 +32,7 @@ module.exports = {
             },
             a: {
               textDecoration: 'none',
-              color: 'var(--color-blue-600)',
+              color: 'var(--color-sky-600)',
             },
             h2: {
               borderWidth: '0 0 1px 0',

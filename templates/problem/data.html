@@ -571,10 +571,10 @@
         <div id="column-visible" class="flex items-center gap-4" data-problem="{{ problem.code }}">
             <span class="text-lg font-bold">{{ _('Show columns:') }}</span>
             <label for="" class="inline-flex items-center">
-                <input type="checkbox" class="text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" data-suffix="checker">
+                <input type="checkbox" class="text-sky-500 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" data-suffix="checker">
                 <span class="ml-2">{{ _('Checker') }}</span>
             </label>
-            <a id="auto-fill" class="text-blue-500 cursor-pointer hover:text-blue-600" href="#"><i class="fa"></i> {{ _('Auto fill') }}</a>
+            <a id="auto-fill" class="text-sky-500 cursor-pointer hover:text-sky-600" href="#"><i class="fa"></i> {{ _('Auto fill') }}</a>
         </div>
         <table class="w-full table-fixed" id="case-table">
             <thead>
@@ -637,7 +637,7 @@
                                 {% if not(form.prefix and '__prefix__' in form.prefix) %}
                                 {% if (form.empty_permitted or form['type'].value() != 'C' or
                                           form['input_file'].value() in valid_files) %}
-                                    <a href="javascript:void(0)" class="text-blue-500 download-testcase hover:cursor-pointer hover:text-blue-600" data-order="{{ form.order.value() }}">Download</a>
+                                    <a href="javascript:void(0)" class="text-sky-500 download-testcase hover:cursor-pointer hover:text-sky-600" data-order="{{ form.order.value() }}">Download</a>
                                 {% endif %}
                                 {% endif %}
                             </div>
@@ -650,8 +650,8 @@
                 </tbody>
         </table>
         <div class="mt-4">
-            <input type="submit" value="{{ _('Submit!') }}" class="px-4 py-2 text-white bg-blue-500 rounded-md hover:text-blue-600">
-            <a id="add-case-row" class="font-semibold text-blue-500" href="javascript:void(0)"><i class="fa-duotone fa-plus"></i> {{ _('Add new case') }}</a>
+            <input type="submit" value="{{ _('Submit!') }}" class="px-4 py-2 text-white bg-sky-500 rounded-md hover:text-sky-600">
+            <a id="add-case-row" class="font-semibold text-sky-500" href="javascript:void(0)"><i class="fa-duotone fa-plus"></i> {{ _('Add new case') }}</a>
         </div>
         <script>
             function download_testcase() {

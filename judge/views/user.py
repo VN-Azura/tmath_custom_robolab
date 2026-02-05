@@ -592,7 +592,7 @@ class CreateManyUser(TitleMixin, FormView):
         start = form.cleaned_data['start_id']
         end = form.cleaned_data['end_id']
         org_id = form.cleaned_data['organization']
-        org: Organization = Organization.objects.get(id=org_id)
+        org = Organization.objects.filter(id=org_id).first() if org_id else None
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="%s_list_user.csv"' % prefix
         writer = csv.writer(response)

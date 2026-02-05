@@ -13,7 +13,7 @@
             {% if orgs %}
                 <p style="margin-top: 0" class="mb-4 text-2xl"><b>{{ _('From') }}</b>
                     {% for org in orgs -%}
-                        <a href="{{ org.get_absolute_url() }}" class="font-semibold text-blue-500 cursor-pointer hover:text-black">{{ org.name }}</a>
+                        <a href="{{ org.get_absolute_url() }}" class="font-semibold text-sky-500 cursor-pointer hover:text-black">{{ org.name }}</a>
                         {%- if not loop.last %}, {% endif %}
                     {% endfor %}
                 </p>

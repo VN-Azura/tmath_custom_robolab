@@ -194,10 +194,10 @@
                             {% endif %}
                         {% endif %}
                         <td class="px-3 py-3 font-bold uppercase">
-                            <a href="{{ url('problem_detail', problem.code) }}" class="dark:hover:text-indigo-400">{{ problem.code }}</a>
+                            <a href="{{ url('problem_detail', problem.code) }}" class="dark:hover:text-sky-400">{{ problem.code }}</a>
                         </td>
                         <td class="px-3 py-3 font-bold">
-                            <a href="{{ url('problem_detail', problem.code) }}" class="dark:hover:text-indigo-400 line-clamp-1">{{ problem.name }}</a>
+                            <a href="{{ url('problem_detail', problem.code) }}" class="dark:hover:text-sky-400 line-clamp-1">{{ problem.name }}</a>
                         </td>
                         <td class="hidden px-3 py-3 lg:table-cell">
                             {% if problem.group %}
@@ -207,7 +207,7 @@
                         <td class="px-3 py-3">{{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}</td>
                         <td class="px-3 py-3">{{ problem.ac_rate|floatformat(1) }}%</td>
                         <td class="px-3 py-3">
-                            <a class="text-indigo-600 dark:text-indigo-400" href="{{ url('ranked_submissions', problem.code) }}">
+                            <a class="text-sky-500 dark:text-sky-400" href="{{ url('ranked_submissions', problem.code) }}">
                                 {{ problem.user_count }}
                             </a>
                         </td>

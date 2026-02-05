@@ -32,7 +32,7 @@
         <td class="p-2 font-bold text-center">{{ sol.score }}</td>
         <td class="p-2">{{ link_user(sol.author) }}</td>
         <td class="p-2 text-center">{{ sol.created|date(_("M j, Y, G:i")) }}</td>
-        <td class="text-center text-blue-500"><a href="{{ url('public_solution_detail', sol.problem.code, sol.pk) }}">View</a></td>
+        <td class="text-center text-sky-500"><a href="{{ url('public_solution_detail', sol.problem.code, sol.pk) }}">View</a></td>
       </tr>
       {% endfor %}
     </tbody>

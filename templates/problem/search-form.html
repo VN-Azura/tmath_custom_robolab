@@ -21,7 +21,7 @@
             {% if request.user.is_authenticated %}
             <div class="block mt-2">
                 <label class="inline-flex items-center" for="hide_solved">
-                    <input class="text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" id="hide_solved" type="checkbox" name="hide_solved" value="1"
+                    <input class="text-sky-500 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" id="hide_solved" type="checkbox" name="hide_solved" value="1"
                             {% if hide_solved %}checked{% endif %}>
                     <span class="ml-2" >{{ _('Hide solved problems') }}</span>
                 </label>
@@ -46,15 +46,15 @@
                     {% for type in problem_types %}
                     <div class="block">
                         <label for="id_type_{{ loop.index }}" class="inline-flex items-center">
-                            <input class="text-indigo-600 border-gray-300 rounded shadow-sm dark:border-slate-600 dark:bg-black peer focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" 
+                            <input class="text-sky-500 border-gray-300 rounded shadow-sm dark:border-slate-600 dark:bg-black peer focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" 
                                    type="checkbox" id="id_type_{{ loop.index }}" onchange="this.form.submit()" name="type" value="{{ type.id }}" {% if type.id in selected_types %}checked=checked{% endif %}>
-                            <span class="ml-2 peer-checked:font-semibold peer-checked:text-indigo-500 line-clamp-1" title="{{ type.full_name }}">{{ type.full_name }}</span>
+                            <span class="ml-2 peer-checked:font-semibold peer-checked:text-sky-500 line-clamp-1" title="{{ type.full_name }}">{{ type.full_name }}</span>
                         </label>
                     </div>
                     {% endfor %}
                 </div>
             </fieldset>
-            <button id="go" type="submit" class="w-full p-2 mt-4 font-bold text-white bg-blue-500 rounded-md">{{ _('Go') }}</button>
+            <button id="go" type="submit" class="w-full p-2 mt-4 font-bold text-white bg-sky-500 rounded-md">{{ _('Go') }}</button>
         </form>
     </div>
 </div>

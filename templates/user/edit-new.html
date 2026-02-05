@@ -39,7 +39,7 @@
                         <div class="font-semibold text-gray-400">
                             {{ _('Last seen')}} {{ relative_time(user.last_access) }}
                         </div>
-                        <a href="http://www.gravatar.com/" title="{{ _('Change your avatar') }}" target="_blank" class="px-4 py-2 text-white bg-blue-500 rounded-md" rel="noopener">
+                        <a href="http://www.gravatar.com/" title="{{ _('Change your avatar') }}" target="_blank" class="px-4 py-2 text-white bg-sky-500 rounded-md" rel="noopener">
                             <i class="fa-duotone fa-camera"></i>
                             <span class="ml-4">{{ _('Change avatar') }}</span>
                         </a>
@@ -96,13 +96,13 @@
             <div class="settings" style="padding-top:0.7em">
                 <table class="w-full">
                     <tr><td>
-                        <a href="{{ url('password_change') }}" class="inline-header text-indigo-500">
+                        <a href="{{ url('password_change') }}" class="inline-header text-sky-500">
                             {{ _('Change your password') }}
                         </a>
                     </td></tr>
                     {% if can_download_data %}
                         <tr><td>
-                            <a href="{{ url('user_prepare_data') }}" class="inline-header text-indigo-500">
+                            <a href="{{ url('user_prepare_data') }}" class="inline-header text-sky-500">
                                 {{ _('Download your data') }}
                             </a>
                         </td></tr>
@@ -111,7 +111,7 @@
             </div>
             <hr>
 
-            <input type="submit" class="w-full p-2 mt-4 font-bold text-white bg-blue-500 rounded-md cursor-pointer hover:bg-blue-600" value="{{ _('Update profile') }}">
+            <input type="submit" class="w-full p-2 mt-4 font-bold text-white bg-sky-500 rounded-md cursor-pointer hover:bg-sky-600" value="{{ _('Update profile') }}">
         </form>
     </div>
 {% endblock %}

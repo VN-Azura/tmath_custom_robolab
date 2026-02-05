@@ -29,7 +29,7 @@
 {% endblock %}
 
 {% block body %}
-    <div id="banner" class="text-center dark:text-indigo-500">
+    <div id="banner" class="text-center dark:text-sky-500">
         <a href="https://www.timeanddate.com/worldclock/fixedtime.html?msg={{ contest.name|urlquote('') }}&amp;iso=
                 {{- contest.start_time|utc|date('Y-m-d\TH:i:s') }}" class="text-3xl font-semibold date">
             {%- if contest.is_in_contest(request.user) and not request.participation.live -%}
@@ -122,9 +122,9 @@
                     </th>
                     <td class="h-px w-72 px-6 py-3 text-start">
                         {% if request.user.is_superuser %}
-                            <a class="font-bold text-blue-500 hover:text-blue-600" href="{{ url('problem_detail', problem.problem.code) }}">{{ problem.problem.name }}</a>
+                            <a class="font-bold text-sky-500 hover:text-sky-600" href="{{ url('problem_detail', problem.problem.code) }}">{{ problem.problem.name }}</a>
                         {% else %}
-                            <a class="font-bold text-blue-500 hover:text-blue-600" href="{{ url('contest_problem_detail', contest.key, problem.order) }}">{{ problem.temporary_name }}</a>
+                            <a class="font-bold text-sky-500 hover:text-sky-600" href="{{ url('contest_problem_detail', contest.key, problem.order) }}">{{ problem.temporary_name }}</a>
                         {% endif %}
                     </td>
                     <td class="size-px px-6 py-3 text-start">

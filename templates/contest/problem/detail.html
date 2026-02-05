@@ -25,7 +25,7 @@
     {% if problem.can_view(request) %}
     {% if submission_limit %}
         {% if submissions_left > 0 %}
-            <a href="{{ url('contest_problem_submit', contest.key, problem.order) }}" class="w-full py-3 font-bold text-center text-white bg-blue-500 rounded-2xl hover:text-white hover:bg-blue-600">
+            <a href="{{ url('contest_problem_submit', contest.key, problem.order) }}" class="w-full py-3 font-bold text-center text-white bg-sky-500 rounded-2xl hover:text-white hover:bg-sky-600">
                 {{ _('Submit solution') }}
             </a>
             <div class="mt-2 font-bold text-center text-black">
@@ -36,7 +36,7 @@
                 {% endtrans %}
             </div>
         {% else %}
-            <div class="w-full py-3 text-center text-white bg-blue-500 cursor-not-allowed rounded-2xl">{{ _('Submit solution') }}</div>
+            <div class="w-full py-3 text-center text-white bg-sky-500 cursor-not-allowed rounded-2xl">{{ _('Submit solution') }}</div>
             <div class="mt-2 font-bold text-center text-red-500">{{ _('0 submissions left') }}</div>
         {% endif %}
     {% else %}
@@ -45,7 +45,7 @@
         </a>
     {% endif %}
     {% else %}
-        <div class="w-full py-3 mb-2 text-lg font-semibold text-center text-white bg-blue-500 cursor-not-allowed whitespace-nowrap rounded-2xl line-clamp-1">
+        <div class="w-full py-3 mb-2 text-lg font-semibold text-center text-white bg-sky-500 cursor-not-allowed whitespace-nowrap rounded-2xl line-clamp-1">
             {{ _('Need at least') }} {{ problem.limit_point }} {{ _('points') }}
         </div>
     {% endif %}
@@ -61,12 +61,12 @@
     <div class="grid grid-cols-2 gap-2 font-bold auto-rows-fr w-full my-2 divide-y [&>*]:rounded-xl [&>*]:py-3 [&>*]:hover:text-white [&>*]:text-white [&>*]:px-4">
     
     {% if can_edit_problem %}
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('problem_ticket_list', problem.problem.code) }}">{{ _('Tickets') }}
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('problem_ticket_list', problem.problem.code) }}">{{ _('Tickets') }}
         {% if num_open_tickets %}<span class="badge">{{ num_open_tickets }}</span>{% endif %}
     </a>
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('admin:judge_problem_change', problem.problem.id) }}">{{ _('Edit') }}</a>
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('admin:judge_problem_change', problem.problem.id) }}">{{ _('Edit') }}</a>
     {% if not problem.problem.is_manually_managed %}
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('problem_data', problem.problem.code) }}">{{ _('Test data') }}</a>
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('problem_data', problem.problem.code) }}">{{ _('Test data') }}</a>
     {% endif %}
     {% endif %}
 
@@ -197,11 +197,11 @@
                         Judges:
                     {% endtrans %}
                 </div>
-                <div class="[&>a]:text-blue-500 ">
+                <div class="[&>a]:text-sky-500 ">
                     {% if available_judges %}
                         {% if perms.judge.change_judge %}
                             {% for judge in available_judges %}
-                                <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="hover:text-blue-600">{{ judge.name }}</a>
+                                <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="hover:text-sky-600">{{ judge.name }}</a>
                                 {%- if not loop.last %}, {% endif %}
                             {% endfor %}
                         {% else %}

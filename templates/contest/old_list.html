@@ -126,7 +126,7 @@
 
 {% macro user_count(contest, user) %}
     {% if contest.can_see_own_scoreboard(user) %}
-        <a href="{{ url('contest_ranking', contest.key) }}" class="font-semibold text-blue-500">{{ contest.user_count }}</a>
+        <a href="{{ url('contest_ranking', contest.key) }}" class="font-semibold text-sky-500">{{ contest.user_count }}</a>
     {% else %}
         {{ contest.user_count }}
     {% endif %}
@@ -138,13 +138,13 @@
         {% if request.profile in contest.authors.all() or request.profile in contest.curators.all() or request.profile in contest.testers.all() %}
             <form action="{{ url('contest_join', contest.key) }}" method="post">
                 {% csrf_token %}
-                <input type="submit" class="px-4 py-2 font-bold text-white bg-blue-500 rounded-md cursor-pointer hover:bg-blue-600"
+                <input type="submit" class="px-4 py-2 font-bold text-white bg-sky-500 rounded-md cursor-pointer hover:bg-sky-600"
                         value="{{ _('Spectate') }}">
             </form>
         {% else %}
             <form action="{{ url('contest_join', contest.key) }}" method="post">
                 {% csrf_token %}
-                <input type="submit" class="px-4 py-2 font-bold text-white bg-blue-500 rounded-md cursor-pointer hover:bg-blue-600 join-warning"
+                <input type="submit" class="px-4 py-2 font-bold text-white bg-sky-500 rounded-md cursor-pointer hover:bg-sky-600 join-warning"
                         value="{{ _('Join') }}">
             </form>
         {% endif %}
@@ -167,7 +167,7 @@
                 </select>
             </label>
             <div class="flex flex-col items-center justify-end w-1/6">
-                <button class="w-full p-2 text-white font-bold bg-blue-500 rounded-xl" type="submit">{{_('Search')}}</button>
+                <button class="w-full p-2 text-white font-bold bg-sky-500 rounded-xl" type="submit">{{_('Search')}}</button>
             </div>
         </form>
         {% if active_participations %}
@@ -334,7 +334,7 @@
                         {% if not request.in_contest %}
                             <td  class="text-center"><form action="{{ url('contest_join', contest.key) }}" method="post" class="">
                                     {% csrf_token %}
-                                    <input type="submit" class="p-2 font-semibold text-white bg-blue-500 rounded-md cursor-pointer hover:bg-blue-600"
+                                    <input type="submit" class="p-2 font-semibold text-white bg-sky-500 rounded-md cursor-pointer hover:bg-sky-600"
                                            value="{{ _('Virtual join') }}">
                             </form></td>
                         {% endif %}

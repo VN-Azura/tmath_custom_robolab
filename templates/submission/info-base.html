@@ -10,7 +10,7 @@
                 <br>
                 <span>{{ submission.language }}</span>
                 {% if can_edit %}
-                    [<a class="text-blue-500 hover:text-blue-700" href="{{ url('admin:judge_submission_change', submission.id) }}">{{ _('Admin') }}</a>]
+                    [<a class="text-sky-500 hover:text-sky-700" href="{{ url('admin:judge_submission_change', submission.id) }}">{{ _('Admin') }}</a>]
                 {% endif %}
             {% endwith %}
         </span>

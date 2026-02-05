@@ -118,7 +118,7 @@
                 <div class="px-2">
                     {% set print_case_output = case.status != 'AC' and case.output and (prefix_length is none or prefix_length > 0) %}
                     {% if print_case_output %}
-                    <div class="flex flex-col p-4 bg-blue-100 rounded-md border-2 border-blue-700">
+                    <div class="flex flex-col p-4 bg-blue-100 rounded-md border-2 border-sky-700">
                         <div class="text-xl font-bold">{{ _('Your output (clipped)') }}</div>
                         {% if prefix_length is none %}
                             <pre class="case-output">{{ case.output|linebreaksbr }}</pre>
@@ -181,7 +181,7 @@
                 {% if submission.result != "AB" %}
                 <div class="flex flex-col gap-2 items-center resources md:flex-row">
                     <div class="text-2xl font-bold">{{ _('Resources:') }}</div>
-                    <div class="text-xl font-semibold text-indigo-600 dark:text-sky-400">
+                    <div class="text-xl font-semibold text-sky-500 dark:text-sky-400">
                         {% if submission.result == "TLE" %}
                         <span>---,</span>
                         {% else %}
@@ -193,7 +193,7 @@
                 {% if submission.result == "AC" %}
                 <div class="flex flex-col gap-2 items-center runtime md:flex-row">
                     <div class="text-2xl font-bold">{{ _('Maximum runtime on single test case:') }}</div>
-                    <div class="text-xl font-semibold text-indigo-600 dark:text-sky-400" title="{{ max_execution_time }}s">{{ max_execution_time|floatformat(3) }}s</div>
+                    <div class="text-xl font-semibold text-sky-500 dark:text-sky-400" title="{{ max_execution_time }}s">{{ max_execution_time|floatformat(3) }}s</div>
                 </div>
                 {% endif %}
                 <div class="flex flex-col gap-2 items-center score md:flex-row">
@@ -204,7 +204,7 @@
                             {{ _('Final score:') }}
                         {% endif %}
                     </div>
-                    <div class="text-xl font-semibold text-indigo-600 dark:text-sky-400">
+                    <div class="text-xl font-semibold text-sky-500 dark:text-sky-400">
                         {{ submission.case_points|floatformat(0) }}/{{ submission.case_total|floatformat(0) }}
                         {% if request.in_contest and submission.contest_or_none %}
                         {% with contest=submission.contest_or_none %}

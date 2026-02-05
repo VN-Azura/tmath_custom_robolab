@@ -747,7 +747,7 @@ video {
   background-color: rgb(156 163 175 / var(--tw-bg-opacity));
 }
 
-.\!bg-blue-500 {
+.\!bg-sky-500 {
   --tw-bg-opacity: 1 !important;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity)) !important;
 }
@@ -927,12 +927,12 @@ select,  select:focus {
   background-color: rgb(75 85 99 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-blue-600:hover {
+.hover\:bg-sky-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity));
 }
 
-.hover\:text-indigo-500:hover {
+.hover\:text-sky-500:hover {
   --tw-text-opacity: 1;
   color: rgb(99 102 241 / var(--tw-text-opacity));
 }

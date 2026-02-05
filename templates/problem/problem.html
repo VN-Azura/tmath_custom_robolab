@@ -18,7 +18,7 @@
 {% block abc %}
     {% if request.user.is_authenticated and request.in_contest and submission_limit %}
         {% if submissions_left > 0 %}
-            <a href="{{ url('problem_submit', problem.code) }}" class="w-full py-3 font-bold text-center text-white bg-blue-500 rounded-2xl hover:text-white hover:bg-blue-600">
+            <a href="{{ url('problem_submit', problem.code) }}" class="w-full py-3 font-bold text-center text-white bg-sky-500 rounded-2xl hover:text-white hover:bg-sky-600">
                 {{ _('Submit solution') }}
             </a>
             <div class="mt-2 font-bold text-center text-black">
@@ -29,7 +29,7 @@
                 {% endtrans %}
             </div>
         {% else %}
-            <div class="w-full py-3 text-center text-white bg-blue-500 cursor-not-allowed rounded-2xl">{{ _('Submit solution') }}</div>
+            <div class="w-full py-3 text-center text-white bg-sky-500 cursor-not-allowed rounded-2xl">{{ _('Submit solution') }}</div>
             <div class="mt-2 font-bold text-center text-red-500">{{ _('0 submissions left') }}</div>
         {% endif %}
     {% else %}
@@ -47,9 +47,9 @@
         <a class="bg-green-500 hover:bg-green-600 line-clamp-1" href="{{ url('ranked_submissions', problem.code) }}">{{ _('Leaderboard') }}</a>
     </div>
     {% if can_add_solution %}
-    <a class="w-full py-3 pl-4 mt-2 text-white bg-blue-500 rounded-xl hover:text-white hover:bg-blue-600" href="{{ url('public_solution', problem.code) }}">{{ _('List editorial') }}</a>
+    <a class="w-full py-3 pl-4 mt-2 text-white bg-sky-500 rounded-xl hover:text-white hover:bg-sky-600" href="{{ url('public_solution', problem.code) }}">{{ _('List editorial') }}</a>
     <p class="mt-2">You left {{ num_solution }} solutions </p>
-    <a class="w-full py-3 pl-4 mt-2 text-white bg-blue-500 rounded-xl hover:text-white hover:bg-blue-600" href="{{ url('create_public_solution', problem.code) }}">{{ _('Create editorial') }}</a>
+    <a class="w-full py-3 pl-4 mt-2 text-white bg-sky-500 rounded-xl hover:text-white hover:bg-sky-600" href="{{ url('create_public_solution', problem.code) }}">{{ _('Create editorial') }}</a>
     {% endif %}
     {% if (editorial and editorial.is_accessible_by(request.user)) and not request.in_contest %}
     <a class="w-full py-3 pl-4 mt-2 text-white bg-red-500 rounded-xl hover:text-white hover:bg-red-600" href="{{ url('problem_editorial', problem.code) }}">{{ _('Read editorial') }}</a>
@@ -57,25 +57,25 @@
     {% endif %}
     <div class="grid grid-cols-2 gap-2 font-bold auto-rows-fr w-full my-2 divide-y [&>*]:rounded-xl [&>*]:py-3 [&>*]:hover:text-white [&>*]:text-white [&>*]:px-4">
     {% if can_edit_problem %}
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('problem_ticket_list', problem.code) }}">{{ _('Tickets') }}
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('problem_ticket_list', problem.code) }}">{{ _('Tickets') }}
         {% if num_open_tickets %}<span class="badge">{{ num_open_tickets }}</span>{% endif %}
     </a>
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('admin:judge_problem_change', problem.id) }}">{{ _('Edit') }}</a>
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('admin:judge_problem_change', problem.id) }}">{{ _('Edit') }}</a>
     {% if not problem.is_manually_managed %}
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('problem_data', problem.code) }}">{{ _('Test data') }}</a>
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('problem_data', problem.code) }}">{{ _('Test data') }}</a>
     {% endif %}
     {% elif request.user.is_authenticated and has_tickets %}
     <hr>
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('problem_ticket_list', problem.code) }}">{{ _('My tickets') }}
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('problem_ticket_list', problem.code) }}">{{ _('My tickets') }}
         {% if num_open_tickets %}<span class="badge">{{ num_open_tickets }}</span>{% endif %}
     </a>
     {% endif %}
     {% if perms.judge.clone_problem %}
-    <a class="bg-blue-500 hover:bg-blue-600" href="{{ url('problem_clone', problem.code) }}">{{ _('Clone') }}</a>  
+    <a class="bg-sky-500 hover:bg-sky-600" href="{{ url('problem_clone', problem.code) }}">{{ _('Clone') }}</a>  
     {% endif %}
 
     {% if problem.is_subs_manageable_by(request.user) %}
-    <a class="col-span-2 bg-blue-500 hover:bg-blue-600" href="{{ url('problem_manage_submissions', problem.code) }}">{{ _('Manage submissions') }}</a>
+    <a class="col-span-2 bg-sky-500 hover:bg-sky-600" href="{{ url('problem_manage_submissions', problem.code) }}">{{ _('Manage submissions') }}</a>
     {% endif %}
 
     </div>
@@ -248,11 +248,11 @@
                         Judges:
                     {% endtrans %}
                 </div>
-                <div class="[&>a]:text-blue-500 ">
+                <div class="[&>a]:text-sky-500 ">
                     {% if available_judges %}
                         {% if perms.judge.change_judge %}
                             {% for judge in available_judges %}
-                                <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="hover:text-blue-600">{{ judge.name }}</a>
+                                <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="hover:text-sky-600">{{ judge.name }}</a>
                                 {%- if not loop.last %}, {% endif %}
                             {% endfor %}
                         {% else %}
@@ -271,18 +271,18 @@
 <div class="flex flex-col gap-4 transition-colors duration-500">
     {% if can_edit_problem %}
     <div class="grid grid-cols-2 gap-2 p-4 rounded-xl bg-white dark:bg-dark-content [&>*]:p-3 [&>*]:rounded-xl [&>*]:text-white [&>*]:font-semibold" id="managed">
-        <a class="bg-blue-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-blue-600" href="{{ url('problem_ticket_list', problem.code) }}">{{ _('Tickets') }}
+        <a class="bg-sky-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-sky-600" href="{{ url('problem_ticket_list', problem.code) }}">{{ _('Tickets') }}
             {% if num_open_tickets %}<span class="inline-block px-2 text-center rounded-full bg-slate-700">{{ num_open_tickets }}</span>{% endif %}
         </a>
-        <a class="bg-blue-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-blue-600" href="{{ url('admin:judge_problem_change', problem.id) }}">{{ _('Edit') }}</a>
+        <a class="bg-sky-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-sky-600" href="{{ url('admin:judge_problem_change', problem.id) }}">{{ _('Edit') }}</a>
         {% if not problem.is_manually_managed %}
-        <a class="bg-blue-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-blue-600" href="{{ url('problem_data', problem.code) }}">{{ _('Test data') }}</a>
+        <a class="bg-sky-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-sky-600" href="{{ url('problem_data', problem.code) }}">{{ _('Test data') }}</a>
         {% endif %}
         {% if perms.judge.clone_problem %}
-        <a class="bg-blue-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-blue-600" href="{{ url('problem_clone', problem.code) }}">{{ _('Clone') }}</a>  
+        <a class="bg-sky-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-sky-600" href="{{ url('problem_clone', problem.code) }}">{{ _('Clone') }}</a>  
         {% endif %}
         {% if problem.is_subs_manageable_by(request.user) %}
-        <a class="col-span-2 bg-blue-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-blue-600" href="{{ url('problem_manage_submissions', problem.code) }}">{{ _('Manage submissions') }}</a>
+        <a class="col-span-2 bg-sky-500 dark:bg-dark-text dark:hover:bg-sky-600 hover:bg-sky-600" href="{{ url('problem_manage_submissions', problem.code) }}">{{ _('Manage submissions') }}</a>
         {% endif %}
     </div>
     {% endif %}
@@ -411,7 +411,7 @@
                             {% if available_judges %}
                                 {% if perms.judge.change_judge %}
                                     {% for judge in available_judges %}
-                                        <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="text-blue-500 hover:text-blue-600">{{ judge.name }}</a>
+                                        <a href="{{ url('admin:judge_judge_change', judge.id) }}" class="text-sky-500 hover:text-sky-600">{{ judge.name }}</a>
                                         {%- if not loop.last %}, {% endif %}
                                     {% endfor %}
                                 {% else %}
@@ -445,7 +445,7 @@
 {% block post_description_end %}
     {% if request.user.is_authenticated and not request.profile.mute %}
     <div class="mt-4">
-        <a href="{{ url('new_problem_ticket', problem.code) }}" class="inline-block float-right px-4 py-2 font-semibold text-white bg-blue-600 rounded-md">
+        <a href="{{ url('new_problem_ticket', problem.code) }}" class="inline-block float-right px-4 py-2 font-semibold text-white bg-sky-600 rounded-md">
             {%- if contest_problem and contest_problem.contest.use_clarifications and request.profile.current_contest.live -%}
                 {{ _('Request clarification') }}
             {%- else -%}

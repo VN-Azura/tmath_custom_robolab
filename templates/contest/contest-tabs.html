@@ -42,14 +42,14 @@
                     <form action="{{ url('contest_leave', contest.key) }}" method="post"
                           class="h-full">
                         {% csrf_token %}
-                        <input type="submit" class="h-full p-4 text-white bg-blue-500 cursor-pointer rounded-t-md hover:bg-blue-700 leaving-forever" value="{{ _('Leave contest') }}">
+                        <input type="submit" class="h-full p-4 text-white bg-sky-500 cursor-pointer rounded-t-md hover:bg-sky-700 leaving-forever" value="{{ _('Leave contest') }}">
                     </form>
                 {% else %}
                     {# Allow users to virtual join #}
                     <form action="{{ url('contest_join', contest.key) }}" method="post"
                           class="h-full">
                         {% csrf_token %}
-                        <input type="submit" class="h-full p-4 text-white bg-blue-500 cursor-pointer rounded-t-md hover:bg-blue-700" value="{{ _('Virtual join') }}">
+                        <input type="submit" class="h-full p-4 text-white bg-sky-500 cursor-pointer rounded-t-md hover:bg-sky-700" value="{{ _('Virtual join') }}">
                     </form>
                 {% endif %}
             {% else %}
@@ -58,7 +58,7 @@
                     <form action="{{ url('contest_leave', contest.key) }}" method="post"
                           class="h-full">
                         {% csrf_token %}
-                        <input type="submit" class="h-full p-4 text-white bg-blue-500 cursor-pointer rounded-t-md hover:bg-blue-700" value="
+                        <input type="submit" class="h-full p-4 text-white bg-sky-500 cursor-pointer rounded-t-md hover:bg-sky-700" value="
                             {%- if request.participation.spectate %}
                                 {{- _('Stop spectating') -}}
                             {% else %}
@@ -69,13 +69,13 @@
                     <form action="{{ url('contest_join', contest.key) }}" method="post"
                           class="h-full">
                         {% csrf_token %}
-                        <input type="submit" class="h-full p-4 text-white bg-blue-500 cursor-pointer rounded-t-md hover:bg-blue-700" value="{{ _('Spectate contest') }}">
+                        <input type="submit" class="h-full p-4 text-white bg-sky-500 cursor-pointer rounded-t-md hover:bg-sky-700" value="{{ _('Spectate contest') }}">
                     </form>
                 {% else %}
                     <form action="{{ url('contest_join', contest.key) }}" method="post"
                           class="h-full">
                         {% csrf_token %}
-                        <input type="submit" class="p-4 h-full rounded-t-md  bg-blue-500 text-white hover:bg-blue-700 cursor-pointer {% if not has_joined %}first-join{% endif %}"
+                        <input type="submit" class="p-4 h-full rounded-t-md  bg-sky-500 text-white hover:bg-sky-700 cursor-pointer {% if not has_joined %}first-join{% endif %}"
                                value="{{ _('Join contest') }}">
                     </form>
                 {% endif %}
@@ -85,7 +85,7 @@
         <form action="{{ url('auth_login') }}" method="get"
               class="h-full">
             <input type="hidden" name="next" value="{{ LOGIN_RETURN_PATH|urlencode }}">
-            <input type="submit" class="h-full p-4 text-white bg-blue-500 cursor-pointer rounded-t-md hover:bg-blue-700" value="{{ _('Log in to participate') }}">
+            <input type="submit" class="h-full p-4 text-white bg-sky-500 cursor-pointer rounded-t-md hover:bg-sky-700" value="{{ _('Log in to participate') }}">
         </form>
     {% endif %}
     </li>

@@ -71,14 +71,14 @@
                 {% endif %}
             {% endif %}
                   <td>
-                    <a class="font-bold text-blue-500 hover:text-blue-600" href="{{ url('contest_problem_detail', contest.key, problem.order) }}">{{ problem.temporary_name }}</a>
+                    <a class="font-bold text-sky-500 hover:text-sky-600" href="{{ url('contest_problem_detail', contest.key, problem.order) }}">{{ problem.temporary_name }}</a>
                   </td>
                   <td>{{ problem.problem.time_limit }}s</td>
                   <td>{{ problem.problem.memory_limit|kbsimpleformat }}B</td>
                   <td>{{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}</td>
                   <td>
                       {% if problem.problem.is_public or request.user.is_superuser %}
-                          <a class="font-bold text-blue-500 hover:text-blue-600" href="#">{{ problem.user_count }}</a>
+                          <a class="font-bold text-sky-500 hover:text-sky-600" href="#">{{ problem.user_count }}</a>
                       {% else %}
                           {{ problem.user_count }}
                       {% endif %}

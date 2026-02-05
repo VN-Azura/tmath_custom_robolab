@@ -391,7 +391,7 @@
             <span class="ui red text">{{ _('No judge is available for this problem.') }}</span>
         {% else %}
         
-        <input type="submit" value="{{ _('Submit!') }}" class="w-full p-2 text-lg font-bold text-white bg-blue-500 rounded-md cursor-pointer hover:bg-blue-600"
+        <input type="submit" value="{{ _('Submit!') }}" class="w-full p-2 text-lg font-bold text-white bg-sky-500 rounded-md cursor-pointer hover:bg-sky-600"
         {% if request.in_contest and submission_limit and not submissions_left %}disabled{% endif %}>
         {% endif %}
     </form>

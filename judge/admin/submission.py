@@ -147,12 +147,15 @@ class SubmissionAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         last_record = Submission.objects.order_by('id').last()
-        queryset = Submission.objects.filter(pk__gt=last_record.pk - 50000) \
-            .select_related('problem', 'user__user', 'language').only(
-            'problem__code', 'problem__name', 'user__user__username', 'language__name',
-            'time', 'memory', 'points', 'status', 'result',
-        )
-        use_straight_join(queryset)
+        if last_record is None:
+            queryset = Submission.objects.none()
+        else:
+            queryset = Submission.objects.filter(pk__gt=last_record.pk - 50000) \
+                .select_related('problem', 'user__user', 'language').only(
+                'problem__code', 'problem__name', 'user__user__username', 'language__name',
+                'time', 'memory', 'points', 'status', 'result',
+            )
+            use_straight_join(queryset)
         if not request.user.has_perm('judge.edit_all_problem'):
             id = request.profile.id
             queryset = queryset.filter(Q(problem__authors__id=id) | Q(problem__curators__id=id)).distinct()

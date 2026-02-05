@@ -34,7 +34,7 @@
     }
 
     .active {
-        @apply text-blue-600 border-blue-600 dark:text-blue-500 dark:border-blue-500 [&>*]:text-blue-600 dark:[&>*]:text-blue-500
+        @apply text-sky-600 border-sky-600 dark:text-sky-500 dark:border-sky-500 [&>*]:text-sky-600 dark:[&>*]:text-sky-500
     }
 </style>
 {% endif %}
@@ -185,7 +185,7 @@
         </div>
         <div class="flex">
             <div class="flex items-center h-5">
-                <input id="{{ form.is_public.id_for_label }}" {% if form.is_public.value() %} checked {% endif %} name="{{ form.is_public.name }}" aria-describedby="{{ form.is_public.id_for_label }}-helper-checkbox-text" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <input id="{{ form.is_public.id_for_label }}" {% if form.is_public.value() %} checked {% endif %} name="{{ form.is_public.name }}" aria-describedby="{{ form.is_public.id_for_label }}-helper-checkbox-text" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </div>
             <div class="ms-2 text-sm">
                 <label for="{{ form.is_public.id_for_label }}" class="font-bold text-gray-900 dark:text-gray-300">{{ form.is_public.label }}</label>
@@ -198,7 +198,7 @@
         </div>
         <div class="flex">
             <div class="flex items-center h-5">
-                <input id="{{ form.is_organization_private.id_for_label }}" {% if form.is_organization_private.value() %} checked {% endif %} name="{{ form.is_organization_private.name }}" aria-describedby="{{ form.is_organization_private.id_for_label }}-helper-checkbox-text" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <input id="{{ form.is_organization_private.id_for_label }}" {% if form.is_organization_private.value() %} checked {% endif %} name="{{ form.is_organization_private.name }}" aria-describedby="{{ form.is_organization_private.id_for_label }}-helper-checkbox-text" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </div>
             <div class="ms-2 text-sm">
                 <label for="{{ form.is_organization_private.id_for_label }}" class="font-bold text-gray-900 dark:text-gray-300">{{ form.is_organization_private.label }}</label>
@@ -337,7 +337,7 @@
         </div>
         <div class="flex">
             <div class="flex items-center h-5">
-                <input id="{{ form.partial.id_for_label }}" {% if form.partial.value() %} checked {% endif %} name="{{ form.partial.name }}" aria-describedby="{{ form.partial.id_for_label }}-helper-checkbox-text" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                <input id="{{ form.partial.id_for_label }}" {% if form.partial.value() %} checked {% endif %} name="{{ form.partial.name }}" aria-describedby="{{ form.partial.id_for_label }}-helper-checkbox-text" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             </div>
             <div class="ms-2 text-sm">
                 <label for="{{ form.partial.id_for_label }}" class="font-bold text-gray-900 dark:text-gray-300">{{ form.partial.label }}</label>
@@ -374,7 +374,7 @@
                 {% for language in form.allowed_languages %}
                 <div class="flex items-center h-5">
                     <input id="{{ language.id_for_label }}" name="{{ form.allowed_languages.name }}" type="checkbox" value="{{ language.data.value }}" {% if allowed_languages and language.data.value|str in allowed_languages %}checked{% endif %}
-                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                           class="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="{{ language.id_for_label }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ language.choice_label }}</label>
                 </div>
                 {% endfor %}
@@ -391,7 +391,7 @@
             {% endif %}
         </div>
         <div class="flex items-center sm:col-span-2">
-            <input id="allowed_languages_checkall" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <input id="allowed_languages_checkall" type="checkbox" value="" class="w-4 h-4 text-sky-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
             <label for="allowed_languages_checkall" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ _('Check all') }}</label>
             <script>
                 var original = document.getElementById('allowed_languages_list');

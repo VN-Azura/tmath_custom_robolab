@@ -64,11 +64,11 @@
                     <tbody class="divide-y divide-slate-300">
                     {% for problem in authored %}
                         <tr class="divide-x divide-slate-300">
-                            <td class="p-2 text-indigo-500 hover:text-indigo-700">
+                            <td class="p-2 text-sky-500 hover:text-indigo-700">
                                 <a href="{{ url('problem_detail', problem.code) }}">{{ problem.name }}</a>
                             </td>
                             <td class="p-2">{{ problem.group.full_name }}</td>
-                            <td class="p-2 text-center text-indigo-500 hover:text-indigo-700"><a href="{{ url('ranked_submissions', problem.code) }}">
+                            <td class="p-2 text-center text-sky-500 hover:text-indigo-700"><a href="{{ url('ranked_submissions', problem.code) }}">
                                 {{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}
                             </a></td>
                         </tr>
