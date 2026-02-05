@@ -1,0 +1,83 @@
+{% extends "common-content.html" %}
+
+{% block js_media %}
+    {% block users_js_media %}{% endblock %}
+    <script>
+        $(function () {
+            $('#search-handle').replaceWith($('<select>').attr({
+                id: 'search-handle',
+                name: 'handle',
+                onchange: 'form.submit()'
+            }));
+            var in_user_redirect = false;
+            $('#search-handle').select2({
+                placeholder: "{{ _('Search by handle...') }}",
+                ajax: {
+                    url: "{{ url('user_search_select2_ajax') }}"
+                },
+                minimumInputLength: 1,
+                templateResult: function (data, container) {
+                    return $('<span>', {'class': 'flex space-x-2'})
+                        .append($('<img>', {
+                            'loading': 'lazy',
+                            'class': 'user-search-image', src: data.gravatar_url,
+                            width: 24, height: 24
+                        }))
+                        .append($('<span>', {'class': data.display_rank + ' flex-1 user-search-name'}).text(data.text))
+                        .append($('<a>', {href: '/user/' + data.text, 'class': 'user-redirect'})
+                            .append($('<i>', {'class': 'fa-duotone fa-mail-forward'}))
+                            .mouseover(function () {
+                                in_user_redirect = true;
+                            }).mouseout(function () {
+                                in_user_redirect = false;
+                            }));
+                }
+            }).on('select2:selecting', function () {
+                return !in_user_redirect;
+            });
+
+            var $last = null;
+            $(window).on('hashchange', function () {
+                var hash = window.location.hash;
+                if (hash.startsWith('#!')) {
+                    var $user = $('#user-' + hash.substring(2)).addClass('!bg-yellow-200');
+                    if ($user) {
+                        $(document).scrollTop($user.position().top + 300);
+                        if ($last !== null) $last.removeClass('!bg-yellow-200');
+                        $last = $user;
+                    }
+                }
+            }).trigger('hashchange');
+        });
+    </script>
+{% endblock %}
+
+{% block media %}
+    {% block users_media %}{% endblock %}
+    <style>
+        .user-pagination {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% block before_body %}{% endblock before_body %}
+    {% if page_obj and page_obj.has_other_pages() %}
+        <div class="flex flex-col space-y-2 md:justify-between md:items-center md:flex-row">
+            {% include "list-pages.html" %}
+        </div>
+    {% endif %}
+
+    <div class="flex flex-col">
+        {% block before_users_table %}{% endblock %}
+        <div class="w-full my-4 overflow-x-auto scrollbar" >
+            {% block users_table %}{% endblock %}
+        </div>
+    </div>
+    {% if page_obj and page_obj.has_other_pages() %}
+        <div class="bottom-pagination-bar">{% include "list-pages.html" %}</div>
+    {% endif %}
+{% endblock %}

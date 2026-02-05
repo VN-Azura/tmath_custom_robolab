@@ -1,0 +1,38 @@
+{% extends "tabs-base.html" %}
+
+{% block tabs %}
+    {{ make_tab('detail', 'fa-info-circle', url('problem_detail', problem.code), _('Detail')) }}
+    {{ make_tab('submit', 'fa-paper-plane', url('problem_submit', problem.code), _('Submit')) }}
+    {{ make_tab('submission', 'fa-list', url('chronological_submissions', problem.code), _('Submissions')) }}
+    {{ make_tab('leaderboard', 'fa-ranking-star', url('ranked_submissions', problem.code), _('Leaderboard')) }}
+    {% if (editorial and editorial.is_accessible_by(request.user)) and not request.in_contest %}
+    {{ make_tab('editorial', '', url('problem_editorial', problem.code), _('Editorial')) }}
+    {% endif %}
+{% endblock %}
+
+{% block tab_title %}
+<div class="flex flex-col flex-1 lg:space-x-4 lg:items-center lg:flex-row lg:max-w-[50%]">
+  <div class="flex space-x-4">
+      {% if request.user.is_authenticated %}
+          {% if problem.id in completed_problem_ids %}
+              <a class="text-3xl" href="{{ url('user_submissions', problem.code, request.user.username) }}">
+                  {% if problem.is_public or request.in_contest %}
+                      <i class="text-green-500 fa-duotone fa-check-circle"></i>
+                  {% else %}
+                      <i class="text-red-500 fa-duotone fa-lock"></i>
+                  {% endif %}
+              </a>
+          {% elif problem.id in attempted_problems %}
+              <a class="text-3xl" href="{{ url('user_submissions', problem.code, request.user.username) }}">
+                  {% if problem.is_public or request.in_contest %}
+                      <i class="text-yellow-500 fa-duotone fa-minus-circle"></i>
+                  {% else %}
+                      <i class="text-red-500 fa-duotone fa-lock"></i>
+                  {% endif %}
+              </a>
+          {% endif %}
+      {% endif %}
+      <div class="text-3xl font-bold text-black dark:text-white line-clamp-1">{{ title }}</div>    
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block media %}
+    {% include "timezone/media-css.html" %}
+    {{ form.media.css }}
+    <style>
+        small {
+            font-size: 0.7em;
+            padding-left: 0.6em;
+        }
+
+        #edit-form {
+            border: unset;
+            background: unset;
+        }
+
+        #content-body {
+            text-align: center;
+        }
+
+        #center-float {
+            display: inline-block;
+            text-align: initial;
+            max-width: 100%;
+            width: 450px;
+        }
+
+        ul.errorlist {
+            margin: 0px;
+            text-align: right;
+            list-style: none;
+        }
+
+        .full-textfield {
+            padding-top: 0.5em;
+        }
+        .pass-req {
+            padding: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block js_media %}
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    {{ form.media.js }}
+{% endblock %}
+
+{% block body %}
+    <div id="center-float" class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                {{ _('Create an account') }}
+            </h1>
+            <form id="edit-form" action="" method="post" class="space-y-4 md:space-y-6">
+                {% csrf_token %}
+                <div class="">
+                    <div class="relative">
+                        <input type="text" name="{{ form.username.name }}" id="{{ form.username.id_for_label }}" class="{% if form.username.errors %}dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:border-red-600{% else %}border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600{% endif %} block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" placeholder=" " />
+                        <label for="{{ form.username.id_for_label }}" class="{% if form.username.errors %}text-red-600 dark:text-red-500{% else %}text-gray-500 dark:text-gray-400 peer-focus:text-blue-600 peer-focus:dark:text-blue-500{% endif %} absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">{{ _('Username') }}</label>
+                    </div>
+                    {% if form.username.errors %}
+                    <p id="outlined_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ form.username.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="">
+                    <div class="relative">
+                        <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}" class="{% if form.name.errors %}dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:border-red-600{% else %}border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600{% endif %} block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" placeholder=" " />
+                        <label for="{{ form.name.id_for_label }}" class="{% if form.name.errors %}text-red-600 dark:text-red-500{% else %}text-gray-500 dark:text-gray-400 peer-focus:text-blue-600 peer-focus:dark:text-blue-500{% endif %} absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">{{ _('Fullname') }}</label>
+                    </div>
+                    {% if form.name.errors %}
+                    <p id="outlined_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ form.name.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="">
+                    <div class="relative">
+                        <input type="email" name="{{ form.email.name }}" id="{{ form.email.id_for_label }}" class="{% if form.email.errors %}dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:border-red-600{% else %}border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600{% endif %} block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" placeholder=" " />
+                        <label for="{{ form.email.id_for_label }}" class="{% if form.email.errors %}text-red-600 dark:text-red-500{% else %}text-gray-500 dark:text-gray-400 peer-focus:text-blue-600 peer-focus:dark:text-blue-500{% endif %} absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">{{ _('Email') }}</label>
+                    </div>
+                    {% if form.email.errors %}
+                    <p id="outlined_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ form.email.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="">
+                    <div class="relative">
+                        <input type="password" name="{{ form.password1.name }}" id="{{ form.password1.id_for_label }}" class="{% if form.password1.errors %}dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:border-red-600{% else %}border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600{% endif %} block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" placeholder=" " />
+                        <label for="{{ form.password1.id_for_label }}" class="{% if form.password1.errors %}text-red-600 dark:text-red-500{% else %}text-gray-500 dark:text-gray-400 peer-focus:text-blue-600 peer-focus:dark:text-blue-500{% endif %} absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">{{ _('Password') }}</label>
+                    </div>
+                    {% if form.password1.errors %}
+                    <p id="outlined_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ form.password1.errors }}</p>
+                    {% endif %}
+                    <div id="password_validators" role="tooltip" class="hidden">
+                        <ul>
+                            {% for validator in password_validators %}
+                                <li>{{ validator.get_help_text() }}</li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            const $password_validator = document.getElementById('password_validators');
+                            const $password_input = document.getElementById('{{ form.password1.id_for_label }}');
+                            const options = {
+                                placement: 'bottom',
+                                triggerType: 'hover',
+                            };
+                            const instanceOptions = {
+                                id: 'tooltipContent',
+                                override: true
+                            };
+                            const tooltip = new Tooltip($password_validator, $password_input, options, instanceOptions);
+                            tooltip.show();
+                        });
+                    </script>
+                </div>
+                <div class="">
+                    <div class="relative">
+                        <input type="password" name="{{ form.password2.name }}" id="{{ form.password2.id_for_label }}" class="{% if form.password2.errors %}dark:border-red-500 border-red-600 dark:focus:border-red-500 focus:border-red-600{% else %}border-gray-300 dark:border-gray-600 dark:focus:border-blue-500 focus:border-blue-600{% endif %} block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 appearance-none dark:text-white focus:outline-none focus:ring-0 peer" placeholder=" " />
+                        <label for="{{ form.password2.id_for_label }}" class="{% if form.password2.errors %}text-red-600 dark:text-red-500{% else %}text-gray-500 dark:text-gray-400 peer-focus:text-blue-600 peer-focus:dark:text-blue-500{% endif %} absolute text-sm duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1">{{ _('Confirm password') }}</label>
+                    </div>
+                    {% if form.password2.errors %}
+                    <p id="outlined_error_help" class="mt-2 text-xs text-red-600 dark:text-red-400">{{ form.password2.errors }}</p>
+                    {% endif %}
+                </div>
+                <div class="">
+                    <label for="{{ form.timezone.id_for_label }}" class="block mb-2 text-sm font-semibold {% if form.timezone.errors %} text-red-700 dark:text-red-500 {% else %} text-gray-900 dark:text-white {% endif %}">{{ form.timezone.label }}</label>
+                    <select id="{{ form.timezone.id_for_label }}" name="{{ form.timezone.name }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-403 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    {% for group_label, group_choices in form.timezone.field.choices %}
+                        <optgroup label="{{ group_label }}">
+                            {% for value, label in group_choices %}
+                                <option value="{{ value }}" {% if form.timezone.value() == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                    </select>
+                    {% if form.timezone.help_text %}
+                    <div class="mt-2 text-xs text-gray-500 dark:text-gray-300">
+                        {{ form.timezone.help_text }}
+                    </div>
+                    {% endif %}
+                </div>
+                <button class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800" type="submit">{{ _('Register!') }}</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

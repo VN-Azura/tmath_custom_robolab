@@ -1,0 +1,25 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block extrahead %}{{ block.super }}
+    <script>
+        django.jQuery(function ($) {
+            $('.rerate-link').appendTo('footer>ul').show();
+            $('.rejudge-link').click(function () {
+                return confirm('{{ _('Are you sure you want to rejudge ALL the submissions?') }}');
+            });
+        });
+    </script>
+{% endblock extrahead %}
+
+{% block after_field_sets %}{{ block.super }}
+    {% if original and original.is_rated and original.ended and perms.judge.contest_rating %}
+    <li class="rerate-link grp-float-left">
+        <a title="{% trans 'Rate' %}" href="{% url 'admin:judge_contest_rate' original.pk %}"
+           class="grp-button">
+            <i class="fa fa-lg fa-signal"></i>
+            <span class="text">{% trans "Rate" %}</span>
+        </a>
+    </li>
+    {% endif %}
+{% endblock %}

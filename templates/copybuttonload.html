@@ -1,0 +1,25 @@
+<script>
+    let typography = document.querySelectorAll('.custom-typography');
+    typography.forEach((element) => {
+        element.querySelectorAll('pre').forEach((preElement) => {
+            let parentCopyButton = document.createElement('div');
+            parentCopyButton.classList.add('relative', 'block')
+            let copyButton = document.createElement('span');
+            copyButton.classList.add('copy-button');
+            copyButton.innerText = 'Copy';
+            parentCopyButton.appendChild(copyButton);
+            copyButton.onclick = () => {
+                navigator.clipboard.writeText(preElement.innerText);
+                // Change to copied text during 1 second
+                copyButton.innerText = 'Copied!';
+                setTimeout(() => {
+                    copyButton.innerText = 'Copy';
+                }, 1000);
+            };
+            // Append the preElement after the copyButton
+            parentCopyButton.appendChild(preElement.cloneNode(true));
+            preElement.parentElement.insertBefore(parentCopyButton, preElement);
+            preElement.remove();
+        });
+    });
+</script>

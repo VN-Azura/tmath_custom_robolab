@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="flex flex-col">
+  <div class="flex gap-4 p-4">
+    <button id="participantButton" class="py-2 flex-1 rounded-xl font-semibold text-white btn-default">Participants</button>
+    <button id="spectatorButton" class="py-2 flex-1 rounded-xl font-semibold text-white btn-default">Spectators</button>
+    <form action="{{ url('typeracer:leave_room', room.pk) }}" method="post" class="flex-1">
+      {% csrf_token %}
+      <button id="leaveButton" type="submit" class="py-2 w-full rounded-xl font-semibold text-white btn-default">Leave room</button>
+    </form>
+  </div>
+  <div class="flex gap-4 p-4" id="info">
+  </div>
+  {% if request.user.is_superuser %}
+  <a href="{{ url('typeracer:create_contest', room.pk) }}" class="py-2 font-semibold text-center text-white btn-default">Start</a>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block bodyend %}
+<script>
+  const info = document.querySelector('#info');
+  function reloadInfo() {
+    $.ajax({
+      url: `{{ url('typeracer:get_info', room.pk)}}`,
+      type: 'GET',
+      success: (data) => {
+        info.innerHTML = data;
+      }
+    });
+  }
+  const participantButton = document.querySelector('#participantButton');
+  const spectatorButton = document.querySelector('#spectatorButton');
+  participantButton.addEventListener('click', () => {
+    console.log('participate');
+    $.ajax({
+      url: `{{ url('typeracer:participate', room.pk)}}`,
+      type: 'POST',
+      success: (data) => {
+        console.log(data);
+      },
+    })
+  });
+  spectatorButton.addEventListener('click', () => {
+    console.log('spectate');
+    $.ajax({
+      url: `{{ url('typeracer:spectate', room.pk)}}`,
+      type: 'POST',
+      success: (data) => {
+        console.log(data);
+      }
+    })
+  });
+  reloadInfo();
+  var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+  var ws_path = ws_scheme + '://' + window.location.host + '/ws/typeracer/room/{{ room.pk }}/';
+  var ws = new WebSocket(ws_path);
+
+  ws.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    if (data.type === 'change-user') {
+      reloadInfo();
+    }
+    if (data.type === 'start-typo') {
+      window.location.href = `{{ url('typeracer:contest', room.pk) }}`;
+    }
+  };
+</script>
+{% endblock %}

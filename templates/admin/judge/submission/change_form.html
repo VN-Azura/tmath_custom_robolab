@@ -1,0 +1,22 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+
+{% block extrahead %}{{ block.super }}
+    <script>
+        django.jQuery(function ($) {
+            $('.rejudgelink').appendTo('footer>ul').show();
+        });
+    </script>
+{% endblock extrahead %}
+
+{% block after_field_sets %}{{ block.super }}
+    {% if original and not original.is_locked %}
+    <li style="display: none" class="rejudgelink grp-float-left">
+        <a title="{% trans "Rejudge" %}" href="{% url 'admin:judge_submission_rejudge' original.pk %}"
+           class="grp-button ">
+            <i class="fa fa-lg fa-refresh"></i>
+            <span class="text">{% trans "Rejudge" %}</span>
+        </a>
+    </li>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block media %}
+    {% block content_media %}{% endblock %}
+{% endblock %}
+
+{% block js_media %}
+    {% block content_js_media %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col items-stretch lg:flex-row-reverse">
+        <div class="lg:pl-6 lg:basis-1/5">
+            <div class="sticky flex flex-col w-full pt-4 top-14">{% block info_float %}{% endblock %}</div>
+        </div>
+        <div class="flex-1 py-2">
+            <div class="flex flex-col">
+                {% block description %}{% endblock %}
+                {% block description_end %}
+                    <hr>
+                {% endblock %}
+                {% block post_description_end %}{% endblock %}
+            </div>
+            {% block comments %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bodyend %}
+    {% if REQUIRE_JAX %}
+        {% include "mathjax-load.html" %}
+    {% endif %}
+{% endblock %}

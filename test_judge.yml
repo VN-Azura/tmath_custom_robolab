@@ -1,0 +1,53 @@
+alpha:
+    docker run \
+        --name alpha \
+        -p 0.0.0.0:9990:9990 \
+        -v /mnt/problems:/problems \
+        --cap-add=SYS_PTRACE \
+        -d \
+        --restart=always \
+        vnoj/judge-tier2:latest \
+        run -p 11111 -c /problems/alpha.yml \
+        171.244.63.31
+
+beta:
+    docker run \
+        --name beta \
+        -p 0.0.0.0:9997:9997 \
+        -v /mnt/problems:/problems \
+        --cap-add=SYS_PTRACE \
+        -d \
+        --restart=always \
+        vnoj/judge-tier1:latest \
+        run -p "11111" -c /problems/beta.yml \
+        "171.244.63.31"
+
+gamma:
+    docker run \
+        --name gamma \
+        -p 0.0.0.0:9996:9996 \
+        -v /mnt/problems:/problems \
+        --cap-add=SYS_PTRACE \
+        -d \
+        --restart=always \
+        vnoj/judge-tier1:latest \
+        run -p "11111" -c /problems/gamma.yml \
+        "171.244.63.31"
+
+delta:
+    docker run \
+        --name delta \
+        -p "$(ip addr show dev eth1 | perl -ne 'm@inet (.*)/.*@ and print$1 and exit')":9991:9991 \
+        -v /mnt/problems:/problems \
+        --cap-add=SYS_PTRACE \
+        -d \
+        --restart=always \
+        dmoj/judge-tier1:latest \
+        run -p 9999 -c /problems/delta.yml \
+        "123.30.234.95"
+
+## Path: /mnt/problems/gamma.yml
+id: Gamma
+key: 8I)L)8MT-%h2(cfO*(>fr1Z}BukAK2sDtAG]_G2H&{(!SW7&lQJMycQs=C5Go~(PbQlqnO4:ln2X}o9Ip$|*d7]xa=zAx<<LaVwJ
+problem_storage_globs:
+    - /problems/*

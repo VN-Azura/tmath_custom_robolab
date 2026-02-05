@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block js_media %}
+<script>
+  $(document).ready(function () {
+    $('.time-remaining').each(function () {
+        count_down($(this));
+    });
+  })
+</script>
+{% endblock js_media %}
+
+{% block body %}
+<div class="flex gap-4">
+  <div class="flex-1 p-2 rounded-xl">
+    <div class="flex items-center justify-between">
+      <div class="text-xl font-semibold">Solo Rooms</div>
+      <a href="{{ url('typeracer:create_room') }}" class="flex items-center gap-1 px-3 py-2 btn-default">
+        Create
+        <div class="fa-doutone fa-lg fa-plus"></div>
+      </a>
+    </div>
+    <table id="solo" class="w-full mt-4">
+      <thead class="text-white bg-black">
+        <tr class="">
+          <th class="px-3 py-3">ID</th>
+          <th class="px-3 py-3 text-left">Room Name</th>
+          <th class="w-20 px-3 py-3">Status</th>
+          <th class="w-10 px-3 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="dark:text-white dark:bg-dark-content">
+      </tbody>
+    </table>
+  </div>
+  <div class="flex-1 p-2 rounded-xl">
+    <div class="flex items-center justify-between">
+      <div class="text-xl font-semibold">Multiply Rooms</div>
+      <button class="flex items-center gap-1 px-3 py-2 btn-default ">
+        Create
+        <div class="fa-doutone fa-lg fa-plus"></div>
+      </button>
+    </div>
+    <table id="multi" class="w-full mt-4">
+      <thead class="text-white bg-black">
+        <tr class="">
+          <th class="px-3 py-3">ID</th>
+          <th class="px-3 py-3 text-left">Room Name</th>
+          <th class="w-20 px-3 py-3">Status</th>
+          <th class="w-10 px-3 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="dark:text-white dark:bg-dark-content">
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock body %}
+
+{% block bodyend %}
+<script>
+  var solo = document.getElementById('solo');
+  var multi = document.getElementById('multi');
+  var soloBody = solo.getElementsByTagName('tbody')[0];
+  var multiBody = multi.getElementsByTagName('tbody')[0];
+  $.ajax({
+    url: '{{ url("typeracer:list_solo_room") }}',
+    type: 'GET',
+    success: function (data) {
+      soloBody.innerHTML = data;
+    }
+  })
+  $.ajax({
+    url: '{{ url("typeracer:list_multi_room") }}',
+    type: 'GET',
+    success: function (data) {
+      multiBody.innerHTML = data;
+    }
+  })
+</script>
+{% endblock bodyend %}

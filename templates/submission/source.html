@@ -1,0 +1,130 @@
+{% extends "submission/info-base.html" %}
+{% block media %}
+    <style>
+        .line {
+            position: relative;
+        }
+
+        .highlighter {
+            position: absolute;
+            width: 9999px;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        a:active .line .highlighter {
+            background: rgba(255, 212, 0, 0.48);
+        }
+        .source-wrap {
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+        
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="flex flex-col gap-1 mt-6 text-lg font-bold dark:text-white">
+        <div><a href="{{ url('submission_status', submission.id) }}">{{ _('View status') }}</a></div>
+        {% if request.user.is_superuser or request.user.is_staff %}
+        <div><a href="{{ url('submission_source_raw', submission.id) }}">{{ _('View raw source') }}</a></div>
+        {% endif %}
+        {% if perms.judge.rejudge_submission and not submission.is_locked %}
+            <div>
+                <form action="{{ url('submission_rejudge') }}" method="post">
+                    {% csrf_token %}
+                    <a href="#" onclick="parentNode.submit()">{{ _('Rejudge') }}</a>
+                    <input type="hidden" name="id" value="{{ submission.id }}">
+                    <input type="hidden" name="path" value="{{ url('submission_status', submission.id) }}">
+                </form>
+            </div>
+        {% endif %}
+    </div>
+    <br>
+    <hr class="half-hr">
+    <br>
+    <div class="p-2 overflow-x-auto rounded-md bg-gray-50 dark:bg-[#211930]">
+        <table>
+            <tr>
+                <td class="pr-1.5 text-right text-gray-500 border-r border-gray-500">
+                    <div>
+                        {% for line in raw_source.split('\n') %}
+                            <a href="#line-{{ loop.index }}" name="line-{{ loop.index }}">
+                                <pre class="line">{{ loop.index }}</pre>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td class="pl-4">{{ highlighted_source }}</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
+
+{% block bodyend %}
+<script>
+(function () {
+  // Cho phép thao tác copy trong input/textarea/contentEditable
+  function isEditable(el) {
+    if (!el) return false;
+    const tag = el.tagName ? el.tagName.toLowerCase() : '';
+    return tag === 'input' || tag === 'textarea' || el.isContentEditable;
+  }
+
+  // Chặn các tổ hợp phím phổ biến để sao chép/lưu/xuất
+  const BLOCKED = new Set([
+    'KeyC',    // Ctrl/Cmd+C
+    'Insert',  // Ctrl+Insert (copy), Shift+Insert (paste)
+    'KeyX',    // Ctrl/Cmd+X
+    'KeyS',    // Ctrl/Cmd+S (save)
+    'KeyU',    // Ctrl/Cmd+U (view source của trình duyệt)
+    'KeyP'     // Ctrl/Cmd+P (print)
+  ]);
+
+  // Bắt ở capture phase để chặn sớm
+  window.addEventListener('keydown', function (e) {
+    if (isEditable(e.target)) return; // không đụng vào vùng nhập liệu của người được phép
+    const ctrlLike = e.ctrlKey || e.metaKey; // Ctrl (Win/Linux) hoặc Cmd (macOS)
+    const isBlocked = ctrlLike && BLOCKED.has(e.code);
+
+    // Ngoài ra, Shift+Insert là paste → chặn luôn
+    const isShiftInsert = e.shiftKey && e.code === 'Insert';
+
+    if (isBlocked || isShiftInsert) {
+      e.preventDefault();
+      e.stopPropagation();
+      // tùy ý: hiển thị toast cảnh báo
+    }
+  }, true);
+
+  // Chặn copy/cut từ menu ngữ cảnh / Edit menu
+  ['copy', 'cut', 'paste', 'contextmenu', 'dragstart'].forEach(evt => {
+    document.addEventListener(evt, function (e) {
+      if (isEditable(e.target)) return;
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+  });
+
+  // Nếu dùng Monaco/CodeMirror, nhớ đặt readOnly và chặn phím trong editor:
+  // monacoEditor.updateOptions({ readOnly: true });
+  // monacoEditor.onKeyDown(e => { if ((e.ctrlKey||e.metaKey) && e.keyCode === monaco.KeyCode.KeyC) e.preventDefault(); });
+
+  // (tùy chọn) Làm rối clipboard nếu lọt được sự kiện copy
+  document.addEventListener('copy', function (e) {
+    if (isEditable(e.target)) return;
+    const fake = 'Copy không được phép';
+    if (e.clipboardData) {
+      e.clipboardData.setData('text/plain', fake);
+      e.preventDefault();
+    }
+  }, true);
+})();
+</script>
+{% endblock bodyend %}

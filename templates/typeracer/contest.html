@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% include 'typeracer/typeracer.html' %}
+{% endblock body %}
+
+{% block bodyend %}
+<script>
+  var start = 0
+  const content = document.querySelector('#type_content')
+  let summary = 0
+  let arrayQuote;
+  const typeInput = document.querySelector('#type')
+  typeInput.onpaste = e => e.preventDefault();
+  const QUOTE_API_URL = '{{ url("typeracer:get_quote", room.id) }}'
+  const timer = document.querySelector('#timer')
+
+  function getQuote() {
+    return fetch(QUOTE_API_URL)
+      .then(response => response.json())
+      .then(data => data.content)
+  }  
+
+  async function renderNewQuote() {
+    const quote = await getQuote()
+    content.innerHTML = ''
+    quote.split('').forEach(char => {
+      const characterSpan = document.createElement('span')
+      characterSpan.setAttribute('title', char)
+      const charText = document.createTextNode(char)
+      characterSpan.appendChild(charText)
+      content.appendChild(characterSpan)
+    })
+    typeInput.disabled = false
+    typeInput.focus()
+    typeInput.value = null
+    arrayQuote = content.querySelectorAll('span')
+    summary = arrayQuote.length
+    startTimer()
+  }
+
+  var limit = {{ contest.limit }}
+  var startTime1 = new Date('{{ contest.time_start }}')
+
+  var startTime = new Date('{{ contest.time_start }}')
+  var endTime = new Date('{{ contest.time_end }}')
+  var start1 = Date.now()
+  var limitTime 
+  if (start1 < startTime) {
+    limitTime = {{ contest.limit }}
+  }
+  else {
+    limitTime = Math.floor({{ contest.limit }} - (start1 - startTime) / 1000)
+  }
+  timer.innerText = limitTime
+  typeInput.disabled = true
+  if (startTime < Date.now()) {
+    renderNewQuote()
+  } else {
+    var time = Math.round((startTime - Date.now()) / 1000);
+    var countdownToStart = setInterval(function() {
+      if (time <= 0) {
+        renderNewQuote()
+        clearInterval(countdownToStart)
+      }
+      content.innerHTML = `The race will start in ${time} seconds`
+      time--
+    }, 1000)
+  }
+
+  const speed = document.querySelector('#speed')
+  const car = document.querySelector('#car_' + {{ request.profile.id }})
+  let countDown
+  let speedCount
+  let carUpdate
+
+  function saveResult(speed, progress, time, is_finish = false) {
+    if (is_finish) {
+      clearInterval(countDown)
+      clearInterval(speedCount)
+      content.innerHTML = 'Finished'
+      typeInput.value = null
+      typeInput.disabled = 'disabled'
+    }
+    $.ajax({
+      type: 'POST',
+      url: '{{ url("typeracer:finish_contest") }}',
+      data: {
+        user: window.user.id,
+        contest: '{{ contest.id }}',
+        progress: progress,
+        speed: speed,
+        time: time,
+        finish: is_finish,
+      }
+    })
+    if (is_finish) {
+      setTimeout(() => {
+        window.location.href = '{{ url("typeracer:typo_ranking", contest.id) }}';
+      }, 1000)
+    }
+  }
+
+  typeInput.addEventListener('input', function() {
+    typeInput.classList.remove('incorrect')
+    const arrayValue = typeInput.value.split('')
+    var i = start
+    while (i < arrayQuote.length && arrayQuote[i] != ' ') {
+      arrayQuote[i].classList.remove('correct')
+      arrayQuote[i].classList.remove('incorrect')
+      i += 1
+    }
+    let correct = true
+    arrayValue.forEach((character, index) => {
+      if (correct) {
+        if (character == ' ') {
+          saveResult(calSpeed(), Math.floor(start * 100 / summary), new Date() - startTime1)
+        }
+        console.log(start + index, arrayQuote.length)
+        console.log(character)
+        if (start + index == arrayQuote.length && character == ' ') {
+          car.style.left = '98%'
+          start = start + index
+          speed.innerText = calSpeed()
+          saveResult(speed.innerText, 100, new Date() - startTime1, true)
+        } else {
+          const answer = arrayQuote[index + start].title
+          if (character === answer) {
+            arrayQuote[index + start].classList.add('correct')
+            if (answer == ' ') {
+              typeInput.value = null
+              start = index + start + 1
+            }
+          } else {
+            arrayQuote[index + start].classList.add('incorrect')
+            typeInput.classList.add('incorrect')
+            correct = false
+          }
+        }
+      }
+    })
+  })
+
+  function setCarAnimate(id, progress) {
+    thiscar = document.querySelector('#car_' + id)
+    thiscar.style.left = progress + '%'
+  }
+
+  function calSpeed() {
+    return Math.floor(start * 60 * 1000 / (new Date() - startTime1))
+  }
+
+  function startTimer() {
+    var time = parseInt(timer.innerText)
+    countDown = setInterval(() => {
+      timer.innerText = time
+      time--
+      if (time <= 0) {
+        window.location.href = '{{ url("typeracer:typo_ranking", contest.id) }}';
+      }
+    }, 1000)
+  }
+
+  function getTimerTime() {
+    return Math.floor((new Date() - startTime1) / 1000)
+  }
+
+  window.load_dynamic_update = function () {
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var ws_path = ws_scheme + '://' + window.location.host + '/ws/typeracer/contest/{{ contest.id }}/';
+    var ws = new WebSocket(ws_path);
+
+    ws.onmessage = function (event) {
+      var data = JSON.parse(event.data);
+      if (data.type == 'change-progress') {
+        message = data.message
+        setCarAnimate(message.user, message.progress)
+      }
+    };
+  }
+  $(function () {
+    load_dynamic_update();
+  });
+</script>
+{% endblock bodyend %}

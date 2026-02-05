@@ -1,0 +1,223 @@
+{% extends "common-content.html" %}
+
+{% block media %}
+    <noscript>
+        <style>#category, #types {
+            visibility: visible;
+        }
+        </style>
+    </noscript>
+    {% if not request.in_contest %}
+        <style>
+            #problem-table th {
+                padding: 0;
+            }
+
+            a.hot-problem-link:hover > .hot-problem-count {
+                visibility: visible;
+            }
+
+            span.hot-problem-count {
+                color: #555;
+                font-size: 0.75em;
+                vertical-align: super;
+                visibility: hidden;
+                padding-left: 0.25em;
+                position: relative;
+            }
+
+            ul.problem-list {
+                padding: 0 !important;
+            
+		}
+       	    .type-tag{
+		font-size: 0.8rem;
+		color: #888 !important;	    
+		} 
+	</style>
+    {% endif %}
+{% endblock %}
+
+{% block js_media %}
+    {% compress js %}
+        <script>
+            $(function () {
+                var $form = $('form#filter-form');
+                var $search = $('#search');
+
+                $('#category').select2({
+                    placeholder: "{{ _('Select category') }}"
+                });
+
+                function prep_form() {
+                    $search.prop('disabled', !$search.val());
+                }
+
+                function clean_submit() {
+                    prep_form();
+                    $form.submit();
+                }
+
+                // This is incredibly nasty to do but it's needed because otherwise the select2 steals the focus
+                $search.keypress(function (e) {
+                    if (e.keyCode == 13)
+                        $('#go').click();
+                });
+
+                $('#go').click(clean_submit);
+
+                $('input#full_text, input#hide_solved').click(function () {
+                    prep_form();
+                    ($('<form>').attr('action', window.location.pathname + '?' + $form.serialize())
+                        .append($('<input>').attr('type', 'hidden').attr('name', 'csrfmiddlewaretoken')
+                            .attr('value', $.cookie('csrftoken')))
+                        .attr('method', 'POST').appendTo($('body')).submit());
+                });
+
+            });
+        </script>
+    {% endcompress %}
+    {% if request.in_contest %}
+        {% compress js %}
+            <script src="{{ static('libs/tablesorter.js') }}" type="text/javascript"></script>
+            <script type="text/javascript">
+                $(function () {
+                    $.tablesorter.addParser({
+                        id: 'solvedsort',
+                        is: function (s) {
+                            return false;
+                        },
+                        format: function (s, table, cell, cellIndex) {
+                            return $(cell).attr('solved');
+                        },
+                        type: 'numeric'
+                    });
+
+                    $('#problem-table').tablesorter({
+                        headers: {
+                            0: {
+                                sorter: 'solvedsort'
+                            }
+                        },
+                        textExtraction: function (node) {
+                            node = $(node);
+                            var text = node.text().replace(/^\s+|\s+$/g, '');
+                            return (node.hasClass('p') ? text.replace(/p$/, '') : text);
+                        }
+                    });
+                });
+            </script>
+        {% endcompress %}
+    {% endif %}
+{% endblock %}
+
+{% block title_ruler %}{% endblock %}
+
+{% block title_row %}
+    {% set tab = 'list' %}
+    {% set title = 'Problems' %}
+    {% include "problem/problem-list-tabs.html" %}
+{% endblock %}
+
+{% block body %}
+    {% if page_obj.has_other_pages() %}
+        <div class="top-pagination-bar">{% include "list-pages.html" %}</div>
+    {% endif %}
+
+    <div class="flex flex-col lg:flex-row-reverse">
+        {% block before_table %}{% endblock %}
+        <div class="mb-8 lg:w-1/4">
+            {% include "problem/search-form.html" %}
+            {% if hot_problems %}
+                <div class="bg-white">
+                    <h3>{{ _('Hot problems') }} <i class="fa fa-fire"></i></h3>
+                    <div class="sidebox-content">
+                        <ul class="problem-list">{% for problem in hot_problems %}
+                            <li><a href="{{ url('problem_detail', problem.code) }}" class="hot-problem-link">
+                                {{ problem.name }}
+                            </a></li>
+                        {% endfor %}</ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div id="content-left" class="flex-1 overflow-x-auto lg:pr-10 ">
+            <table class="w-full">
+                <thead class="border-b border-black">
+                <tr class="text-left text-slate-700 dark:text-slate-400 [&>*]:py-4">
+                    {% if request.user.is_authenticated %}
+                        <th class="w-10 text-center">
+                            <a href="{{ sort_links.solved }}"><i class="fa fa-check"></i>{{ sort_order.solved }}
+                            </a>
+                        </th>
+                    {% endif %}
+                    <th class="px-3 w-14">
+                        <a href="{{ sort_links.code }}">{{ _('Code') }}{{ sort_order.code }}</a>
+                    </th>
+                    <th class="px-3 problem">
+                        <a href="{{ sort_links.name }}">{{ _('Problem') }}{{ sort_order.name }}</a>
+                    </th>
+                    <th class="hidden w-40 px-3 lg:table-cell">
+                        <a href="{{ sort_links.group }}">{{ _('Category') }}{{ sort_order.group }}</a>
+                    </th>
+                    <th class="w-20 px-3">
+                        <a href="{{ sort_links.points }}">{{ _('Points') }}{{ sort_order.points }}</a>
+                    </th>
+                    <th class="w-20 px-3">
+                        <a href="{{ sort_links.ac_rate }}">{{ _('AC %%') }}{{ sort_order.ac_rate }}</a>
+                    </th>
+                    <th class="w-20 px-3 lg:w-32">
+                        <a href="{{ sort_links.user_count }}">{{ _('Users') }}{{ sort_order.user_count }}</a>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="dark:text-white dark:bg-dark-content">
+                {% for problem in problems %}
+                    <tr class="even:bg-slate-200 dark:even:bg-zinc-700/75">
+                        {% if request.user.is_authenticated %}
+                            {% if problem.id in completed_problem_ids %}
+                                <td solved="1" class="text-center">
+                                    <a href="{{ url('user_submissions', problem.code, request.user.username) }}">
+                                        <i class="solved-problem-color fa-duotone fa-check-circle"></i>
+                                    </a>
+                                </td>
+                            {% elif problem.id in attempted_problems %}
+                                <td solved="0" class="text-center">
+                                    <a href="{{ url('user_submissions', problem.code, request.user.username) }}">
+                                        <i class="attempted-problem-color fa-duotone fa-minus-circle"></i>
+                                    </a>
+                                </td>
+                            {% else %}
+                                <td solved="-1" class="text-center">
+                                    <i class="unsolved-problem-color fa-duotone fa-minus-circle"></i>
+                                </td>
+                            {% endif %}
+                        {% endif %}
+                        <td class="px-3 py-3 font-bold uppercase">
+                            <a href="{{ url('problem_detail', problem.code) }}" class="dark:hover:text-indigo-400">{{ problem.code }}</a>
+                        </td>
+                        <td class="px-3 py-3 font-bold">
+                            <a href="{{ url('problem_detail', problem.code) }}" class="dark:hover:text-indigo-400 line-clamp-1">{{ problem.name }}</a>
+                        </td>
+                        <td class="hidden px-3 py-3 lg:table-cell">
+                            {% if problem.group %}
+                            <div class="line-clamp-1" title="{{ problem.group.full_name }}"> {{ problem.group.full_name }}</div> 
+                            {% endif %}
+                        </td>
+                        <td class="px-3 py-3">{{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}</td>
+                        <td class="px-3 py-3">{{ problem.ac_rate|floatformat(1) }}%</td>
+                        <td class="px-3 py-3">
+                            <a class="text-indigo-600 dark:text-indigo-400" href="{{ url('ranked_submissions', problem.code) }}">
+                                {{ problem.user_count }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+   {% if page_obj.has_other_pages() %}
+       <div class="bottom-pagination-bar">{% include "list-pages.html" %}</div>
+   {% endif %}
+{% endblock %}

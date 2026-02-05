@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block js_media %}
+    <script src="{{ static('libs/tablesorter.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#organization-table").tablesorter();
+        });
+    </script>
+{% endblock %}
+
+{% block title_ruler %}{% endblock %}
+
+{% block title_row %}
+    {% set tab = 'organizations' %}
+    {% set title = _('Organizations') %}
+    {% include "user/user-list-tabs.html" %}
+{% endblock %}
+
+{% block body %}
+<div class="flex flex-col space-y-4">
+  <div class="">
+    <input type="text" id="myInput" onkeyup="filterOrganization()" placeholder="Search for names.." title="Type in a name"
+      class="w-full p-2 bg-white border border-gray-300 rounded-md dark:bg-black dark:text-white dark:placeholder-gray-400 dark:border-gray-600"
+    >
+  </div>
+  {% if my_org %}
+  <div class="text-2xl font-bold dark:text-white">
+    {{ _('My organizations') }}
+  </div>
+  <table id="my_organizations" class="border">
+    <thead>
+      <tr class="[&>*]:p-4 divide-x divide-white">
+        <th class="w-5/6 text-white bg-black" id="name">{{ _('Name') }}</th>
+        <th class="text-white bg-black">{{ _('Members') }}</th>
+      </tr>
+    </thead>
+    <tbody class="[&>tr>*]:p-2 divide-x divide-y divide-slate-300">
+      {% for org in my_org %}
+      <tr class="divide-x divide-slate-300">
+        <td><a class="font-semibold cursor-pointer dark:text-white" href="{{ org.get_absolute_url() }}">{{ org.name }}</a></td>
+        <td class="text-center">
+          <a class="font-semibold cursor-pointer" href="{{ org.get_users_url() }}">{{ org.member_count }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  <div class="text-2xl font-bold dark:text-white">
+    {{ _('All organizations') }}
+  </div>
+  <table id="organization-table" class="border">
+    <thead>
+      <tr class="[&>*]:p-4 divide-x divide-white">
+        <th class="w-5/6 text-white bg-black" id="name">{{ _('Name') }}</th>
+        <th class="text-white bg-black">{{ _('Members') }}</th>
+      </tr>
+    </thead>
+    <tbody class="[&>tr>*]:p-2 divide-x divide-y divide-slate-300">
+      {% for org in organizations %}
+      <tr class="divide-x divide-slate-300">
+        <td><a class="font-semibold cursor-pointer dark:text-white" href="{{ org.get_absolute_url() }}">{{ org.name }}</a></td>
+        <td class="text-center">
+          <a class="font-semibold cursor-pointer dark:text-sky-500" href="{{ org.get_users_url() }}">{{ org.member_count }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block bodyend %}
+<script>
+  var trs = document.querySelectorAll("tbody tr");
+  function filterOrganization() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    trs.forEach(function(tr) {
+      td = tr.getElementsByTagName("td")[0];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr.style.display = "";
+        } else {
+          tr.style.display = "none";
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}

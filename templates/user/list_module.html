@@ -1,0 +1,9 @@
+{% extends 'common-content.html' %}
+
+{% block body %}
+  <ul class="w-full flex flex-col items-start p-10 gap-4">
+    {% for link in modules %}
+      <li class="flex items-center before:content-['\f111'] before:font-awesome before:inline-flex before:p-2"><a href="{{ link.link }}" class="text-blue-700 text-3xl hover:text-blue-500">{{ link.name }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock body %}

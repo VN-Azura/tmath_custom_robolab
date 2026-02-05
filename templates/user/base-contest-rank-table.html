@@ -1,0 +1,89 @@
+<table id="users-table" class="w-full text-left border-separate border-spacing-y-4">
+    <thead>
+        <tr
+            class="[&>*]:bg-black [&>*]:text-white [&>*]:text-center [&>*]:p-1 divide-x divide-white dark:divide-slate-600">
+            <th class="min-w-[5rem] w-20 text-center">{{ rank_header or _("Rank") }}</th>
+            {% block after_rank_head %}{% endblock %}
+            <th class="hidden w-44 username-column">{{ _('Username') }}</th>
+            <th class="username">{{ _('Fullname') }}</th>
+            {% block before_point_head %}{% endblock %}
+            <th class="min-w-[5rem] w-24 text-center sticky right-0">
+                {% if sort_links %}<a href="{{ sort_links.performance_points }}">{% endif %}
+                    {{ _('Points') }}
+                    {% if sort_links %}{{ sort_order.performance_points }}</a>{% endif %}
+            </th>
+            {% block after_point_head %}{% endblock %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for rank, user in users %}
+        <tr id="user-{{ user.user.username }}"
+            class="[&>*]:p-3 [&>*]:dark:bg-black divide-x dark:divide-slate-600 [&>td:nth-last-child(1)]:rounded-r-md [&>td:nth-child(1)]:rounded-l-md bg-white shadow-lg {% block row_extra scoped %}{% endblock %}">
+            <td class="text-center border-r dark:text-white">{{ rank }}</td>
+            {% block after_rank scoped %}{% endblock %}
+            <td class="hidden max-w-xs p-2 border-r username-column">
+                {{ link_user(user.user, noname=True) }}
+            </td>
+            <td class="min-w-[16rem]">
+                <div class="flex items-center justify-between p-2 whitespace-nowrap user-name">
+                    {{ link_user(user.user) }}
+                    {% block user_data scoped %}{% endblock %}
+                </div>
+            </td>
+            {% block before_point scoped %}{% endblock %}
+            {% block point scoped %}
+            <td class="text-center dark:text-white" title="{{ user.performance_points|floatformat(2) }}">
+                {{ user.performance_points|floatformat(0) }}
+            </td>
+            {% endblock %}
+            {% block after_point scoped %}{% endblock %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    var table = document.getElementById('users-table');
+    problemHeaders = table.querySelectorAll('#users-table th[data-problem]');
+    function timeToSeconds(time) {
+        const [hours, minutes, seconds] = time.split(':');
+        return (+hours) * 60 * 60 + (+minutes) * 60 + (+seconds);
+    }
+    
+    function dataToHTML(point, time, penalty, state, problem, username) {
+        let penaltyHTML = '';
+        if (penalty != '-1') {
+            penaltyHTML = `<small class="text-red-500">(${penalty})</small>`;
+        }
+        return `<a href="/contest/{{contest.key}}/task/${problem}/submissions/${username}">${point} ${penaltyHTML}<div class="solving-time">${time}</div></a>`;
+    }
+    problemHeaders.forEach(element => {
+        let problem = element.getAttribute('data-problem');
+        problemResults = table.querySelectorAll(`#users-table td[data-problem="${problem}"]`);
+        let minTime = undefined;
+        let minTimeElement = undefined;
+        problemResults.forEach(result => {
+            result.classList.add(result.getAttribute('data-state'), 'font-bold', 'text-center');
+            result.innerHTML = dataToHTML(
+                result.getAttribute('data-points'),
+                result.getAttribute('data-time'),
+                result.getAttribute('data-penalty'),
+                result.getAttribute('data-state'),
+                problem,
+                result.getAttribute('data-username')
+            );
+            if (!result.getAttribute('data-state').endsWith('full-score')) {
+                return;
+            }
+            let time = timeToSeconds(result.getAttribute('data-time'));
+            if (minTime === undefined || time < minTime) {
+                minTime = time;
+                minTimeElement = result;
+            }
+        });
+        if (minTimeElement !== undefined) {
+            minTimeElement.classList.add('first-accept');
+        }
+    });
+</script>

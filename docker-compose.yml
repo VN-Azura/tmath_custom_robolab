@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  # Django Web Application
+  web:
+    build: .
+    container_name: tmath_web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgres://tmath:tmath_password@db:5432/tmath
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+      - ./db.sqlite3:/app/db.sqlite3 # For SQLite development
+    depends_on:
+      - db
+      - redis
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             gunicorn --bind 0.0.0.0:8000 --workers 4 --timeout 120 tmath.wsgi:application"
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: tmath_db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=tmath
+      - POSTGRES_PASSWORD=tmath_password
+      - POSTGRES_DB=tmath
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tmath"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and Celery broker
+  redis:
+    image: redis:7-alpine
+    container_name: tmath_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Celery Worker for background tasks
+  celery:
+    build: .
+    container_name: tmath_celery
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgres://tmath:tmath_password@db:5432/tmath
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    depends_on:
+      - db
+      - redis
+    command: celery -A tmath worker -l info
+
+  # Nginx Reverse Proxy (optional, uncomment if needed)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: tmath_nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  #     - static_volume:/app/static:ro
+  #     - media_volume:/app/media:ro
+  #   depends_on:
+  #     - web
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_volume:
+  media_volume:

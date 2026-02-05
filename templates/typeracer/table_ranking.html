@@ -1,0 +1,19 @@
+{% for user in ranks %}
+<tr class="divide-x [&>*]:p-2">
+  <td class="text-center">
+    {{ loop.index }}
+  </td>
+  <td>
+    {{ link_user(user.user) }}
+  </td>
+  <td class="font-semibold text-center">
+    {{ user.speed|floatformat(0) }} cpm
+  </td>
+  <td class="font-semibold text-center">
+    {{ user.progress }}%
+  </td>
+  <td class="font-semibold text-center">
+    {{ user.time|floatformat(3) }}s
+  </td>
+</tr>
+{% endfor %}

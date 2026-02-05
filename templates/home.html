@@ -1,0 +1,15 @@
+{% extends "blog/list.html" %}
+{% block meta %}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "{{ DMOJ_SCHEME }}://{{ site.domain }}/",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "{{ DMOJ_SCHEME }}://{{ site.domain }}/problems/?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+    </script>
+{% endblock %}

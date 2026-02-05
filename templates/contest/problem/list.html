@@ -1,0 +1,101 @@
+{% extends "common-content.html" %}
+
+{% block title_ruler %}{% endblock %}
+
+{% block title_row %}
+    {% set tab = 'tasks' %}
+    {% if contest.is_joinable_by(request.user) %}
+        {% set title = contest.full_name %}
+    {% else %}
+        {% set title = contest.name %}
+    {% endif %}
+    {% include "contest/contest-tabs.html" %}
+{% endblock %}
+
+{% block body %}
+  <div>
+      <div class="flex items-center my-3 space-x-4 text-3xl dark:text-white">
+          <i class="fa-duotone fa-question-circle"></i>
+          <span class="font-bold ">{{ _('Problems') }}</span>
+      </div>
+      <table class="table w-full max-w-5xl mx-auto border dark:border-slate-600">
+          <thead class="text-white bg-black">
+          <tr class="[&>*]:text-center [&>*]:p-2 [&>*]:px-4 divide-x dark:divide-slate-600 whitespace-nowrap">
+            {% if request.user.is_authenticated and request.in_contest %}
+              <th class="w-20"></th>
+            {% endif %}
+              <th class="w-full">{{ _('Problem') }}</th>
+              <th class="w-32">{{ _('Time limit') }}</th>
+              <th class="w-32">{{ _('Memory limit') }}</th>
+              <th class="w-32">{{ _('Points') }}</th>
+              <th class="w-32">{{ _('Users') }}</th>
+              {% if contest_has_public_editorials %}
+                  <th class="w-32">{{ _('Editorials') }}</th>
+              {% endif %}
+              <th class=""></th>
+          </tr>
+          </thead>
+          <tbody class="divide-y dark:divide-slate-600 dark:text-white">
+            {% for problem in problems %}
+              <tr class="[&>*]:p-2 divide-x dark:divide-slate-600 [&>*]:text-center">
+                {% if request.user.is_authenticated and request.in_contest %}
+                {% if problem.problem.id in completed_problem_ids %}
+                    <td solved="1" class="text-center">
+                        <a href="#">
+                            {% if problem.problem.is_public or request.in_contest %}
+                                <i class="solved-problem-color fa fa-check-circle"></i>
+                            {% else %}
+                                <i class="solved-problem-color fa fa-lock"></i>
+                            {% endif %}
+                        </a>
+                    </td>
+                    
+                {% elif problem.problem.id in attempted_problems %}
+                    <td solved="0" class="text-center">
+                        <a href="#">
+                            {% if problem.problem.is_public or request.in_contest %}
+                                <i class="attempted-problem-color fa fa-minus-circle"></i>
+                            {% else %}
+                                <i class="attempted-problem-color fa fa-lock"></i>
+                            {% endif %}
+                        </a>
+                    </td>
+                {% else %}
+                    <td solved="-1" class="text-center">
+                        {% if problem.problem.is_public or request.in_contest %}
+                            <i class="unsolved-problem-color fa fa-minus-circle"></i>
+                        {% else %}
+                            <i class="unsolved-problem-color fa fa-lock"></i>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            {% endif %}
+                  <td>
+                    <a class="font-bold text-blue-500 hover:text-blue-600" href="{{ url('contest_problem_detail', contest.key, problem.order) }}">{{ problem.temporary_name }}</a>
+                  </td>
+                  <td>{{ problem.problem.time_limit }}s</td>
+                  <td>{{ problem.problem.memory_limit|kbsimpleformat }}B</td>
+                  <td>{{ problem.points|floatformat }}{% if problem.partial %}p{% endif %}</td>
+                  <td>
+                      {% if problem.problem.is_public or request.user.is_superuser %}
+                          <a class="font-bold text-blue-500 hover:text-blue-600" href="#">{{ problem.user_count }}</a>
+                      {% else %}
+                          {{ problem.user_count }}
+                      {% endif %}
+                  </td>
+                  {% if contest_has_public_editorials %}
+                      <td>
+                          {% if problem.problem.is_public and problem.has_public_editorial %}
+                              <a class="font-bold text-red-500 hover:text-red-600" href="#">{{ _('Editorial') }}</a>
+                          {% endif %}
+                      </td>
+                  {% endif %}
+                  <th><a href="{{ url('contest_problem_submit', contest.key, problem.order) }}">{{ _('Submit') }}</a></th>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+  </div>
+{% endblock %}
+
+{% block description_end %}{% endblock %}

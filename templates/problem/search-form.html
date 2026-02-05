@@ -1,0 +1,60 @@
+<div class="grid w-full grid-cols-1">
+    <div class="block-title rounded-t-md">
+        <div class="flex-1 font-bold">
+            {{ _('Problem search') }}
+        </div>
+        <div class="">
+            <i class="fa-duotone fa-search"></i>
+        </div>
+    </div>
+    <div class="p-2 transition-colors duration-500 bg-white shadow-md rounded-b-md dark:text-white dark:bg-zinc-900">
+        <form action="" method="get" class="mt-2" id="filter-form">
+            <input class="block w-full border-gray-300 rounded-md shadow-sm dark:border-slate-600 dark:bg-black dark:placeholder:text-white focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="search" type="text" name="search" value="{{ search_query or '' }}"
+                    placeholder="{{ _('Search problems...') }}">
+            {% if has_fts %}
+            <div class="ui checkbox">
+                <input id="full_text" type="checkbox" name="full_text" value="1"
+                {% if full_text %}checked{% endif %}>
+                <label for="full_text">{{ _('Full text search') }}</label>
+            </div>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+            <div class="block mt-2">
+                <label class="inline-flex items-center" for="hide_solved">
+                    <input class="text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" id="hide_solved" type="checkbox" name="hide_solved" value="1"
+                            {% if hide_solved %}checked{% endif %}>
+                    <span class="ml-2" >{{ _('Hide solved problems') }}</span>
+                </label>
+            </div>
+            {% endif %}
+            <div class="block my-2">
+                <label for="category">
+                    <span class="text-lg font-bold text-gray-700 dark:text-white">{{ _('Category') }}</span>
+                    <select class="w-full mt-1 rounded-lg shadow-md focus:border-indigo-300 dark:bg-dark-content focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="category" name="category" onchange="this.form.submit()">
+                        {% for group in categories %}
+                        <option value=""></option>
+                        <option value="{{ group.id }}" {% if category and group.id == category %} selected {% endif %}>
+                            {{ group.full_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+            <fieldset class="p-2 my-2 bg-gray-100 border-2 rounded-l dark:border-slate-600 dark:bg-dark-content">
+                <legend class="px-2 font-bold">{{ _('Groups') }}</legend>
+                <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-1">
+                    {% for type in problem_types %}
+                    <div class="block">
+                        <label for="id_type_{{ loop.index }}" class="inline-flex items-center">
+                            <input class="text-indigo-600 border-gray-300 rounded shadow-sm dark:border-slate-600 dark:bg-black peer focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50" 
+                                   type="checkbox" id="id_type_{{ loop.index }}" onchange="this.form.submit()" name="type" value="{{ type.id }}" {% if type.id in selected_types %}checked=checked{% endif %}>
+                            <span class="ml-2 peer-checked:font-semibold peer-checked:text-indigo-500 line-clamp-1" title="{{ type.full_name }}">{{ type.full_name }}</span>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            <button id="go" type="submit" class="w-full p-2 mt-4 font-bold text-white bg-blue-500 rounded-md">{{ _('Go') }}</button>
+        </form>
+    </div>
+</div>

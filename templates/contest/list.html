@@ -1,0 +1,306 @@
+{% extends "common-content.html" %}
+{% block meta %}
+    <meta name="description" content="The {{ SITE_NAME }}'s contest list - past, present, and future.">
+{% endblock %}
+
+{% block js_media %}
+    <script src="{{ static('libs/featherlight/featherlight.min.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.time-remaining').each(function () {
+                count_down($(this));
+            });
+
+            $('#organizations').select2({
+              placeholder: "{{ _('Select organization') }}",
+            });
+            $('.contest-tag').find('a[data-featherlight]').featherlight();
+
+            $('.join-warning').click(function () {
+                return confirm('{{ _("Are you sure you want to join?") }}\n' +
+                    '{{ _("Joining a contest for the first time starts your timer, after which it becomes unstoppable.") }}');
+            });
+
+            // var tooltip_classes = 'tooltipped tooltipped-e';
+            //
+            // $('.contest-tag').each(function () {
+            //     var link = $(this);//
+            //     link.mouseenter(function (e) {
+            //         link.addClass(tooltip_classes).attr('aria-label', link.attr('data-description'));
+            //     }).mouseleave(function (e) {
+            //         link.removeClass(tooltip_classes).removeAttr('aria-label');
+            //     });
+            // });
+        });
+    </script>
+{% endblock %}
+
+{% block title_ruler %}{% endblock %}
+
+{% block title_row %}
+    {% set tab = 'list' %}
+    {% set title = 'Contests' %}
+    {% include "contest/contest-list-tabs.html" %}
+{% endblock %}
+
+{% macro contest_head(contest, request) %}
+    {% spaceless %}
+        <a href="{{ url('contest_view', contest.key) }}" class="text-xl font-semibold dark:text-white">
+            {% if contest.is_joinable_by(request.user) %}
+                {{- contest.full_name -}}
+            {% else %}
+                {{- contest.name -}}
+            {% endif %}
+        </a>
+        <span>
+            {% if not contest.is_visible %}
+                <span class="p-1 text-white bg-black rounded-md mr-0.5">
+                    <i class="fa fa-eye-slash"></i> {{ _('hidden') }}
+                </span>
+            {% endif %}
+            {% if contest.is_organization_private %}
+                {% for org in contest.organizations.all() %}
+                    <span class="p-1 mr-1 rounded-md bg-slate-400">
+                        <a class="relative pl-6" href="{{ org.get_absolute_url() }}">
+                            <span class="absolute top-0.5 flex flex-col items-center w-4 h-4 left-1">
+                                <i class="fa-duotone fa-lock"></i> 
+                            </span>
+                            {{ org.short_name }}
+                        </a>
+                    </span>
+                {% endfor %}
+            {% elif contest.is_private %}
+            <div class="inline-flex items-baseline px-2 py-0.5 mr-1 space-x-1 text-black rounded-md bg-slate-500">
+                <i class="fa-duotone fa-lock"></i> 
+                <span class="font-semibold text-white text-md">
+                    {{ _('private') }}
+                </span>
+            </div>
+            {% endif %}
+            {% if contest.is_rated %}
+                <span class="p-1 font-semibold text-white bg-red-500 rounded-md">
+                    <i class="fa-duotone fa-chart-column"></i> {{ _('rated') }}
+                </span>
+            {% endif %}
+            {% for tag in contest.tags.all() %}
+                <span style="background-color: {{ tag.color }}" class="">
+                    <a href="{{ url('contest_tag', tag.name) }}"
+                       style="color: {{ tag.text_color }}"
+                       data-featherlight="{{ url('contest_tag_ajax', tag.name) }}">
+                        {{- tag.name -}}
+                    </a>
+                </span>
+            {% endfor %}
+        </span>
+    {% endspaceless %}
+{% endmacro %}
+
+{% macro time_left(contest) %}
+    <div class="pt-2 text-gray-600 dark:text-slate-400 time">
+        {% if contest.time_limit %}
+            {{ contest.start_time|date(_("M j, Y, G:i")) }} -
+            {{ contest.end_time|date(_("M j, Y, G:i")) }}
+        {% else %}
+            {{ contest.start_time|date(_("M j, Y, G:i")) }}
+        {% endif %}
+        <br>
+        {% if contest.time_limit %}
+            {{ _('%(time_limit)s window', time_limit=contest.time_limit|timedelta('localized-no-seconds')) }}
+        {% else %}
+            {{ _('%(duration)s long', duration=contest.contest_window_length|timedelta('localized-no-seconds')) }}
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro user_count(contest, user) %}
+    {% if contest.can_see_own_scoreboard(user) %}
+        <a href="{{ url('contest_ranking', contest.key) }}" class="font-semibold text-blue-500 dark:text-indigo-500">{{ contest.user_count }}</a>
+    {% else %}
+        {{ contest.user_count }}
+    {% endif %}
+{% endmacro %}
+
+{% macro contest_join(contest, request) %}
+{% set joinable = (not request.in_contest) and contest.is_joinable_by(request.user) %}
+<div class="flex flex-col items-center justify-center p-4 text-center">
+    {% if joinable %}
+        {% if request.profile in contest.authors.all() or request.profile in contest.curators.all() or request.profile in contest.testers.all() %}
+            <form class="w-full" action="{{ url('contest_join', contest.key) }}" method="post">
+                {% csrf_token %}
+                <input type="submit" class="py-3 rounded-full btn-light-red transition-all ease-in-out duration-500 hover:bg-[100%_0%] text-center w-full font-bold text-white cursor-pointer"
+                        value="{{ _('Spectate') }}">
+            </form>
+        {% else %}
+            <form class="w-full" action="{{ url('contest_join', contest.key) }}" method="post">
+                {% csrf_token %}
+                <input type="submit" class="py-3 rounded-full btn-default transition-all ease-in-out duration-500 hover:bg-[100%_0%] text-center w-full font-bold text-white cursor-pointer join-warning"
+                        value="{{ _('Join') }}">
+            </form>
+        {% endif %}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro list_contest(title, list, request, canjoin, hide_user, is_contest) %}
+<div class="flex items-stretch mt-8 mb-4 text-2xl font-bold text-gray-700 uppercase">
+  <span class="pr-5 dark:text-white"> {{ _(title) }} </span>
+  <div class="flex-1">
+      <span class="inline-block w-full h-2 my-3 bg-gray-200 rounded-full"></span>
+  </div>
+</div>
+<div class="grid bg-black rounded-xl grid-cols-5 divide-x dark:divide-slate-600 {% if not canjoin %} lg:grid-cols-10 xl:grid-cols-12 {% else %} lg:grid-cols-9 xl:grid-cols-11 {% endif %}">
+  <div class="text-center text-white font-bold p-4 rounded-l-xl last:rounded-r-xl {% if hide_user %} col-span-5 lg:col-span-10 xl:col-span-12 {% else %} col-span-4 md:col-span-3 lg:col-span-8 xl:col-span-10 {% endif %}">{{ _('Contest') }}</div>
+  {% if not hide_user %}
+  <div class="hidden p-4 font-bold text-center text-white last:rounded-r-xl md:block">{{ _('Users') }}</div>
+  {% endif %}
+  {% if not canjoin %}
+  <div class="flex items-center justify-center last:rounded-r-xl">
+    <input type="checkbox" name="" id="can_join" class="p-3 text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50">
+  </div>
+  {% endif %}
+</div>
+
+<div class="grid grid-cols-1 mt-2 gap-y-2 auto-rows-fr">
+  {% for item in list %}
+    {% if not is_contest %}
+      {% set contest=item.contest %}
+    {% else %}
+      {% set contest=item %}
+    {% endif %}
+    {% set joinable = (not request.in_contest) and contest.is_joinable_by(request.user) %}
+    <div class="grid gap-y-2 bg-white dark:bg-zinc-900 divide-x dark:divide-slate-600 rounded-2xl {% if not joinable %} not_joinable {%endif%} shadow-md [&>div:nth-child(1)]:rounded-l-2xl [&>div:nth-last-child(1)]:rounded-r-2xl grid-cols-5 {% if not canjoin %} lg:grid-cols-10 xl:grid-cols-12 {% else %} lg:grid-cols-9 xl:grid-cols-11 {% endif %}">
+        <div class="flex flex-col space-y-2 justify-between {% if hide_user %} col-span-5 lg:col-span-10 xl:col-span-12 {% else %} col-span-4 md:col-span-3 lg:col-span-8 xl:col-span-10 {% endif %} p-4">
+            <div class="flex flex-col gap-2 lg:flex-row">
+                {{ contest_head(contest, request) }}
+            </div>
+            {% if contest.start_time %}
+            <div class="dark:text-slate-200">
+                {% if contest.time_before_start %}
+                    <span class="time">{{ _('Starts in %(countdown)s', countdown=contest.time_before_start|as_countdown) }}</span>
+                {% elif not is_contest and contest.time_limit %}
+                    <span class="time">{{ _('Window ends in %(countdown)s', countdown=item.time_remaining|as_countdown) }}</span>
+                {% elif contest.time_before_end %}
+                    <span class="time">{{ _('Ends in %(countdown)s', countdown=contest.time_before_end|as_countdown) }}</span>
+                {% endif %}
+                {{ time_left(contest) }}
+            </div>
+            {% endif %}
+        </div>
+        {% if not hide_user %}
+        <div class="flex-col items-center justify-center hidden text-center md:flex">
+            {{ user_count(contest, request.user) }}
+        </div>
+        {% endif %}
+        {% if not canjoin %}
+        {{ contest_join(contest, request) }}
+        {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% block body %}
+    <div class="flex flex-col">
+        <form action="" method="get" class="flex items-end space-x-4">
+            <label for="organizations" class="flex-1 block text-xl">
+                <span class="font-semibold text-gray-700 whitespace-nowrap dark:text-slate-300">{{ _('Organizations') }}</span>
+                <select id="organizations" name='organizations' class="w-full" placeholder="{{ _('Select organization') }}">
+                    <option value=""></option>
+                    {% for org in list_organizations %}
+                    <option class="item" value="{{ org.id }}" {% if organizations and org.id == organizations %}selected{% endif %}>
+                        {{ org.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </label>
+            <div class="flex flex-col items-center justify-end w-1/6">
+                <button class="w-full p-2 font-bold text-white bg-blue-500 rounded-xl" type="submit">{{_('Search')}}</button>
+            </div>
+        </form>
+        {% if active_participations %}
+        {{ list_contest('Active Contests', active_participations, request, request.in_contest, False, False) }}
+        {% endif %}
+
+        {% if current_contests %}
+        {{ list_contest('Ongoing Contests', current_contests, request, request.in_contest, False, True) }}
+        {% endif %}
+
+        {% if future_contests %}
+        {{ list_contest('Upcoming Contests', future_contests, request, True, True, True) }}
+        {% else %}
+          <div class="flex items-center mt-8 mb-4 text-2xl font-bold text-gray-700 uppercase">
+            <span class="pr-5 dark:text-white"> {{ _('Upcoming Contests') }} </span>
+            <div class="flex flex-col flex-1">
+                <span class="inline-block w-full h-2 bg-gray-200 rounded-full "></span>
+            </div>
+          </div>
+          <i class="dark:text-slate-200">{{ _('There are no scheduled contests at this time.') }}</i>
+          <br>
+        {% endif %}
+        <br>
+
+        {% if past_contests %}
+            <div id="past-contests" class="flex items-stretch mt-8 mb-4 text-2xl font-bold text-gray-700 uppercase">
+                <span class="pr-5 dark:text-white"> {{ _('Past Contests') }} </span>
+                <div class="flex-1">
+                    <span class="inline-block w-full h-2 my-3 bg-gray-200 rounded-full"></span>
+                </div>
+            </div>
+            {% if page_obj and page_obj.has_other_pages() %}
+                <div class="top-pagination-bar">{% include "list-pages.html" %}</div>
+            {% endif %}
+            <div class="grid gap-y-2 rounded-xl divide-x divide-white dark:divide-slate-600 grid-cols-5 {% if not request.in_contest %} lg:grid-cols-10 xl:grid-cols-12 {% else %} lg:grid-cols-9 xl:grid-cols-11 {% endif %}">
+              <div class="p-4 font-bold text-center text-white bg-black first:rounded-l-xl md:col-span-3 lg:col-span-8 xl:col-span-10">
+                <a href="{{ sort_links.name }}">{{ _('Contest') }}{{ sort_order.name }}</a>
+              </div>
+              <div class="hidden p-4 font-bold text-center text-white bg-black last:rounded-r-xl md:block">
+                <a href="{{ sort_links.user_count }}" class="contest-sort-link">{{ _('Users') }}{{ sort_order.user_count }}</a>
+              </div>
+              {% if not request.in_contest %}
+              <div class="bg-black last:rounded-r-xl"></div>
+              {% endif %}
+            </div>
+            <div class="grid grid-cols-1 mt-2 gap-y-2 auto-rows-fr">
+              {% for contest in past_contests %}
+                <div class="grid bg-white dark:bg-zinc-900 gap-y-2 divide-x dark:divide-slate-600 rounded-2xl shadow-md grid-cols-5 {% if not request.in_contest %} lg:grid-cols-10 xl:grid-cols-12 {% else %} lg:grid-cols-9 xl:grid-cols-11 {% endif %}">
+                    <div class="flex flex-col justify-between col-span-4 p-4 space-y-2 rounded-l-2xl md:col-span-3 lg:col-span-8 xl:col-span-10">
+                        <div class="flex flex-col gap-2 lg:flex-row">
+                            {{ contest_head(contest, request) }}
+                        </div>
+                        {{ time_left(contest) }}
+                    </div>
+                    <div class="flex-col items-center justify-center hidden text-center md:flex last:rounded-r-2xl">
+                        {{ user_count(contest, request.user) }}
+                    </div>
+                    {% if not request.in_contest and contest.is_joinable_by(request.user) %}
+                    <div class="flex flex-col items-center justify-center p-2 last:rounded-r-2xl">
+                        <form action="{{ url('contest_join', contest.key) }}" method="post" class="w-full">
+                            {% csrf_token %}
+                            <input type="submit" class="py-3 rounded-full btn-purple-red transition-all ease-in-out duration-500 hover:bg-[100%_0%] text-center w-full font-bold text-white cursor-pointer"
+                                value="{{ _('Virtual join') }}">
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            {% if page_obj and page_obj.has_other_pages() %}
+                <div class="bottom-pagination-bar">{% include "list-pages.html" %}</div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block bodyend %}
+    {{ super() }}
+    <script>
+        var filter_joinable_button = document.getElementById('can_join');
+        filter_joinable_button.addEventListener('click', function() {
+            if (filter_joinable_button.checked) {
+                $('.not_joinable').hide();
+            } else {
+                $('.not_joinable').show();
+            }
+        });
+    </script>
+{% endblock bodyend %}

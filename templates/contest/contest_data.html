@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="flex flex-col justify-center w-full h-full mt-10 ">
+    <form action="" method="post" class="max-w-xl p-4 mx-auto space-y-6 rounded-md shadow-md bg-slate-100" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label class="block" for="{{ form.upload.id_for_label }}">
+            <span class="text-gray-700">
+                {{ _('Upload submissions for contest') }}
+            </span>
+            {{ form.upload }}
+        </label>
+        <label class="block" for="{{ form.clear.id_for_label }}">
+            <input type="checkbox" name="{{ form.clear.name }}" id="{{ form.clear.id_for_label }}" class="mr-2 rounded-lg" />
+            {{ _('Clear all old data') }}
+        </label>
+        <button class="w-full p-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600" type="submit">{{ _('Upload!') }}</button>
+    </form>
+</div>
+{% endblock %}
