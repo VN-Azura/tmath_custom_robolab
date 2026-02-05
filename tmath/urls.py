@@ -121,6 +121,8 @@ def paged_list_view(view, name, template=None):
 
 
 urlpatterns = [
+    # Health check for Azure Container Apps
+    path('health/', lambda request: __import__('django.http', fromlist=['JsonResponse']).JsonResponse({'status': 'ok'}), name='health_check'),
     # path('', blog.IndexView.as_view()),
     # path('getlog/', getLog.as_view(), name='get_log'),
     path('grappelli/', include('grappelli.urls')),

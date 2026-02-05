@@ -1,0 +1,21 @@
+[Unit]
+Description=gunicorn daemon for TMATH
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/tmath
+EnvironmentFile=/opt/tmath/.env
+Environment="DJANGO_SETTINGS_MODULE=tmath.settings_production"
+ExecStart=/opt/tmath/venv/bin/gunicorn \
+    --access-logfile - \
+    --error-logfile - \
+    --workers 2 \
+    --timeout 120 \
+    --bind unix:/run/gunicorn.sock \
+    tmath.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

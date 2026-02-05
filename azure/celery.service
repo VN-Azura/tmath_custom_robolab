@@ -1,0 +1,14 @@
+[Unit]
+Description=Celery Worker for TMATH
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/tmath
+EnvironmentFile=/opt/tmath/.env
+Environment="DJANGO_SETTINGS_MODULE=tmath.settings_production"
+ExecStart=/opt/tmath/venv/bin/celery -A tmath worker -l INFO
+
+[Install]
+WantedBy=multi-user.target

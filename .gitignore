@@ -27,3 +27,8 @@ resources/mathjax
 *.log.*
 *.txt
 *.sql
+
+# Azure deployment secrets
+azure/deployment-config.env
+azure/*.env
+azure/.env*
